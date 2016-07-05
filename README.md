@@ -1,4 +1,4 @@
-# caddy-script
+# :whale: caddy-script
 Issue tracker and todo-list for [caddy-script](https://lab.vintagesucks.de/caddy-script/)*, an experimental Caddy installation script generator
 
 #### Todo
