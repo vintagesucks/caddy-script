@@ -21,6 +21,7 @@ Issue tracker and todo-list for [caddy-script](https://lab.vintagesucks.de/caddy
 - [ ] Add support for other linux distributions
 - [ ] Add support for local setups
 - [ ] Extra settings for each domain?
+- [ ] DigitalOcean API?
 
 ---
 
