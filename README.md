@@ -11,7 +11,7 @@ Caddy installation script for DigitalOcean
 - Domain pointed to Droplet
 
 #### Features
-- [x] Set server timezone, email address, domain
+- [x] Set server timezone, email address, domain, caddy extensions
 - [x] Install Caddy (fully automated)
 - [x] Install PHP7 (fully automated)
 - [x] Install MariaDB (fully automated)
