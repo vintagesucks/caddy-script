@@ -234,7 +234,7 @@ EOT
 
 install_mariadb() {
   choose() { echo ${1:RANDOM%${#1}:1} $RANDOM; }
-  MARIADB_ROOT_PASS="$({ choose '!@#$%^\&'
+  MARIADB_ROOT_PASS="$({ choose '!@#%^\&'
     choose '0123456789'
     choose 'abcdefghijklmnopqrstuvwxyz'
     choose 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -274,7 +274,7 @@ install_wordpress() {
   if [[ "$wordpress" = 1 ]]; then
     echo "Installing WordPress"
     choose() { echo ${1:RANDOM%${#1}:1} $RANDOM; }
-    wpdbpass="$({ choose '!@#$%^\&'
+    wpdbpass="$({ choose '!@#%^\&'
       choose '0123456789'
       choose 'abcdefghijklmnopqrstuvwxyz'
       choose 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
