@@ -150,8 +150,13 @@ ${domain} {
   fastcgi / 127.0.0.1:9000 php {
     env PATH /bin
   }
-  rewrite /{
-    to {path} {path}/ /index.php?{query}
+  rewrite {
+    if {path} not_match ^\/wp-admin
+    to {path} {path}/ /index.php?_url={uri}
+  }
+  rewrite {
+    r ^\/([0-9]{4})\/([0-9]{2})\/([0-9]{2})\/(.*)
+    to /{4}
   }
 }
 EOT
