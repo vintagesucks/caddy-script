@@ -1,25 +1,28 @@
 # :whale: caddy-script
-Caddy installation script for DigitalOcean
+Caddy installation script for DigitalOcean (fully automated)
 
-#### Usage
-
-`bash <(curl -s https://raw.githubusercontent.com/vintagesucks/caddy-script/master/main.sh)`
+#### Features
+- [x] Install Caddy
+- [x] Install PHP7
+- [x] Install MariaDB
+- [x] Register Caddy as a service with systemd
+- [x] Configure Caddyfile with gzip, fast-cgi, logs & redirects
+- [x] Install WordPress [optional]
 
 #### Requirements
 
 - Clean Ubuntu 16.04. Droplet on [DigitalOcean](https://m.do.co/c/5585c0623c5d)*
 - Domain pointed to Droplet
 
-#### Features
-- [x] Set server timezone, email address, domain, caddy extensions
-- [x] Install Caddy (fully automated)
-- [x] Install PHP7 (fully automated)
-- [x] Install MariaDB (fully automated)
-- [x] Register Caddy as a service with systemd (fully automated)
-- [x] Install WordPress (fully automated) [optional]
+#### Usage
 
-#### Todo
-- [ ] Replace 'Hello World' page with something nice
+`bash <(curl -s https://raw.githubusercontent.com/vintagesucks/caddy-script/master/main.sh)`
+
+You'll be asked for your timezone, an email, the domain to use and additional features you want.
+
+#### Help
+
+You can read the [Caddy Documentation](https://caddyserver.com/docs) if you need more information about Caddy's features and extensions.
 
 #### Credits
 
