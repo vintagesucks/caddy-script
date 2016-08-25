@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 #       Name: Caddy Installation Script
-#     Author: VintageSucks
+#     Author: Nikolas Evers
 #   Homepage: https://github.com/vintagesucks/caddy-script
 #
 
