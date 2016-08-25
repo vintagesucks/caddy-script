@@ -216,10 +216,10 @@ install_php()
 
 install_caddy_service()
 {
-  echo "Register Caddy as a Service"
+  echo "Registering Caddy as a Service"
   sudo cat <<EOT >> /etc/systemd/system/caddy.service
 [Unit]
-Description=The HTTP/2 web server with automatic HTTPS
+Description=Caddy - The HTTP/2 web server with automatic HTTPS
 Documentation=https://caddyserver.com/docs
 After=network.target
 
@@ -324,7 +324,7 @@ WordPress database name:      wordpress
 WordPress database username:  wordpress
 WordPress database password:  ${wpdbpass}
 
-Please keep this information somewhere safe (preferably not on here!)
+Please keep this information somewhere safe (preferably not here!)
 EOT
   else
     sudo -u caddy cat <<EOT >> /home/caddy/caddy-script.log
@@ -335,7 +335,7 @@ https://github.com/vintagesucks/caddy-script.
 Domain:                       https://${domain}
 MariaDB root password:        ${MARIADB_ROOT_PASS}
 
-Please keep this information somewhere safe (preferably not on here!)
+Please keep this information somewhere safe (preferably not here!)
 EOT
   fi
   service caddy start
