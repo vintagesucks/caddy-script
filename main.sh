@@ -11,7 +11,7 @@ checkLogfile() {
   else
     clear
     echo " >> You already installed Caddy with caddy-script!"
-    echo " >> Please view /home/caddy/caddy-script.log your details."
+    echo " >> Please view /home/caddy/caddy-script.log for your details."
     exit
 fi
 }
@@ -128,7 +128,35 @@ install_caddy() {
   echo "Setting permissions for Caddy."
   sudo setcap cap_net_bind_service=+ep /usr/local/bin/caddy
   echo "Creating Caddyfile."
-  sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
+  if [ "$wordpress" = 1 ]; then
+    sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
+${domain} {
+  root /home/caddy/${domain}/www
+  log $domain/log/access.log {
+    rotate {
+      size 50
+    	age  30
+    	keep 10
+    }
+  }
+  errors {
+    log ${domain}/log/error.log {
+    	size 50
+    	age  30
+    	keep 10
+    }
+  }
+  gzip
+  fastcgi / 127.0.0.1:9000 php {
+    env PATH /bin
+  }
+  rewrite /{
+    to {path} {path}/ /index.php?{query}
+  }
+}
+EOT
+  else
+    sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
 ${domain} {
   root /home/caddy/${domain}/www
   log $domain/log/access.log {
@@ -151,6 +179,7 @@ ${domain} {
   }
 }
 EOT
+  fi
   echo "Setting up directorys for ${domain}"
   runuser -l caddy -c "mkdir ${domain}"
   runuser -l caddy -c "mkdir ${domain}/log"
@@ -273,7 +302,8 @@ finish()
   echo "Granting www-data permission for /www directory"
   sudo chown -R www-data /home/caddy/${domain}/www
   echo "Creating setup logfile"
-  sudo -u caddy cat <<EOT >> /home/caddy/caddy-script.log
+  if [ "$wordpress" = 1 ]; then
+    sudo -u caddy cat <<EOT >> /home/caddy/caddy-script.log
 Thanks for using caddy-script!
 If you run into any issues related to this setup, please open an issue at
 https://github.com/vintagesucks/caddy-script.
@@ -286,6 +316,18 @@ WordPress database password:  ${wpdbpass}
 
 Please keep this information somewhere safe (preferably not on here!)
 EOT
+  else
+    sudo -u caddy cat <<EOT >> /home/caddy/caddy-script.log
+Thanks for using caddy-script!
+If you run into any issues related to this setup, please open an issue at
+https://github.com/vintagesucks/caddy-script.
+
+Domain:                       https://${domain}
+MariaDB root password:        ${MARIADB_ROOT_PASS}
+
+Please keep this information somewhere safe (preferably not on here!)
+EOT
+  fi
   service caddy start
   clear
   echo "Successfully installed Caddy!"
