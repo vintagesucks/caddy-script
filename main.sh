@@ -131,7 +131,7 @@ install_caddy() {
   if [ "$wordpress" = 1 ]; then
     sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
 www.${domain} {
-    redir https://${domain}{uri}
+  redir https://${domain}{uri}
 }
 
 ${domain} {
@@ -163,7 +163,7 @@ EOT
   else
     sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
 www.${domain} {
-    redir https://${domain}{uri}
+  redir https://${domain}{uri}
 }
 
 ${domain} {
