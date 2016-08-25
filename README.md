@@ -1,8 +1,6 @@
 # :whale: caddy-script
 Caddy installation script for DigitalOcean
 
----
-
 #### Usage
 
 `bash <(curl -s https://raw.githubusercontent.com/vintagesucks/caddy-script/master/main.sh)`
