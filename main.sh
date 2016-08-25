@@ -268,6 +268,7 @@ install_mariadb() {
 	")
   echo "${SECURE_MYSQL}"
   apt remove expect -y
+  apt autoremove -y
 }
 
 install_wordpress() {
