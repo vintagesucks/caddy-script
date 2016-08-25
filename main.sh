@@ -130,6 +130,10 @@ install_caddy() {
   echo "Creating Caddyfile."
   if [ "$wordpress" = 1 ]; then
     sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
+www.${domain} {
+    redir https://${domain}{uri}
+}
+
 ${domain} {
   root /home/caddy/${domain}/www
   log $domain/log/access.log {
@@ -158,6 +162,10 @@ ${domain} {
 EOT
   else
     sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
+www.${domain} {
+    redir https://${domain}{uri}
+}
+
 ${domain} {
   root /home/caddy/${domain}/www
   log $domain/log/access.log {
