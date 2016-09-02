@@ -309,8 +309,9 @@ install_wordpress() {
 
 finish()
 {
-  echo "Granting www-data permission for /www directory"
-  sudo chown -R www-data /home/caddy/${domain}/www
+  echo "Granting permissions for"
+  sudo chown -R www-data:www-data /home/caddy/
+  sudo chown -R caddy /home/caddy/
   echo "Creating setup logfile"
   if [ "$wordpress" = 1 ]; then
     sudo -u caddy cat <<EOT >> /home/caddy/caddy-script.log
