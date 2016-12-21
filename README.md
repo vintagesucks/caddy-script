@@ -8,6 +8,7 @@ Caddy installation script for DigitalOcean (fully automated)
 - [x] Register Caddy as a service with systemd
 - [x] Configure Caddyfile with gzip, fast-cgi, logs & redirects
 - [x] Install WordPress [optional]
+- [x] Install Shopware [optional]
 
 #### Requirements
 

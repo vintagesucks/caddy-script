@@ -86,6 +86,24 @@ function readWordPress()
   fi
 }
 
+function readShopware()
+{
+  if [ "$wordpress" = 1 ]; then
+    shopware=0
+  else
+    read -p "Install Shopware? (Y/N)" -n 1 -r
+    echo
+    if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+      shopware=1
+    elif [[ "$REPLY" =~ ^[Nn]$ ]]; then
+      shopware=0
+    else
+      echo " >> Please enter either Y or N."
+      readShopware
+    fi
+  fi
+}
+
 function readStartSetup()
 {
   read -p "Continue with setup? (Y/N)" -n 1 -r
@@ -109,11 +127,13 @@ function prepare()
   readDomain
   readCaddyExtensions
   readWordPress
+  readShopware
   echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
   echo "Caddy Features: ${caddy_extensions}"
   echo "        Domain: ${domain}"
   echo "         Email: ${email}"
   echo "     WordPress: ${wordpress}"
+  echo "      Shopware: ${shopware}"
   echo ""
   readStartSetup
 }
@@ -211,12 +231,37 @@ EOT
   }
 EOT
 
-  # Add redirects for WordPress (if selected)
+  # fastcgi
+  if [ "$shopware" = 1 ]; then
+    sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
+  fastcgi / 127.0.0.1:9000 php {
+    index shopware.php
+    env PATH /bin
+  }
+EOT
+  else
+    sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
+  fastcgi / 127.0.0.1:9000 php {
+    env PATH /bin
+  }
+EOT
+  fi
+
+  # Add rewrites for WordPress (if selected)
   if [ "$wordpress" = 1 ]; then
     sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
   rewrite {
     if {path} not_match ^\/wp-admin
     to {path} {path}/ /index.php?_url={uri}
+  }
+EOT
+  fi
+
+  # Add rewrites for Shopware (if selected)
+  if [ "$shopware" = 1 ]; then
+    sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
+  rewrite {
+    to {path} {path}/ /shopware.php?{query}
   }
 EOT
   fi
@@ -355,11 +400,62 @@ function install_wordpress()
   fi
 }
 
+function install_shopware()
+{
+  if [[ "$shopware" = 1 ]]; then
+    echo "Installing Shopware"
+    choose() { echo ${1:RANDOM%${#1}:1} $RANDOM; }
+    swdbpass="$({ choose '0123456789'
+      choose 'abcdefghijklmnopqrstuvwxyz'
+      choose 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+      for i in $( seq 1 $(( 4 + RANDOM % 8 )) )
+        do
+          choose '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        done
+      } | sort -R | awk '{printf "%s",$1}')"
+
+    mysql -uroot -e "create database shopware;"
+    mysql -uroot -e "grant usage on *.* to shopware@localhost identified by '${swdbpass}';"
+    mysql -uroot -e "grant all privileges on shopware.* to shopware@localhost;"
+    mysql -uroot -e "FLUSH PRIVILEGES;"
+
+    choose() { echo ${1:RANDOM%${#1}:1} $RANDOM; }
+    swadminpass="$({ choose '0123456789'
+      choose 'abcdefghijklmnopqrstuvwxyz'
+      choose 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+      for i in $( seq 1 $(( 4 + RANDOM % 8 )) )
+        do
+          choose '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        done
+      } | sort -R | awk '{printf "%s",$1}')"
+
+    echo "Installing required packages"
+    apt install openjdk-9-jre-headless ant unzip -y
+    echo "Getting sw.phar"
+    curl -o /usr/local/bin/sw http://shopwarelabs.github.io/sw-cli-tools/sw.phar
+    chmod +x /usr/local/bin/sw
+
+    echo "Installing Shopware via Shopware CLI Tools"
+    sw install:release --release=5.2.12 --install-dir=/home/caddy/${domain}/www --db-user=shopware --db-password=${swdbpass} --admin-username=admin --admin-password=${swadminpass} --db-name=shopware --shop-path=CS_SW_PATH_PLACEHOLDER --shop-host=${domain}
+    mysql -uroot -e "UPDATE shopware.s_core_shops SET base_path = NULL WHERE s_core_shops.id = 1;"
+  fi
+}
+
 function finish()
 {
   echo "Granting permissions for"
-  sudo chown -R www-data:www-data /home/caddy/
-  sudo chown -R caddy /home/caddy/
+  if [ "$wordpress" = 1 ]; then
+    sudo chown -R www-data:www-data /home/caddy/
+    sudo chown -R caddy /home/caddy/
+  elif [ "$shopware" = 1 ]; then
+    sudo chown -R www-data:www-data /home/caddy/
+    sudo chown -R caddy /home/caddy/
+    sudo chown -R caddy /home/caddy/${domain}/www
+    sudo chown -R www-data:www-data /home/caddy/${domain}/www/var/cache
+  else
+    sudo chown -R www-data:www-data /home/caddy/
+    sudo chown -R caddy /home/caddy/
+  fi
   echo "Creating setup logfile"
   if [ "$wordpress" = 1 ]; then
     sudo -u caddy cat <<EOT >> /home/caddy/caddy-script.log
@@ -374,6 +470,22 @@ WordPress database username:  wordpress
 WordPress database password:  ${wpdbpass}
 WordPress admin user:         admin
 WordPress admin password:     ${wpadminpass}
+
+Please keep this information somewhere safe (preferably not here!)
+EOT
+  elif [ "$shopware" = 1 ]; then
+    sudo -u caddy cat <<EOT >> /home/caddy/caddy-script.log
+Thanks for using caddy-script!
+If you run into any issues related to this setup, please open an issue at
+https://github.com/vintagesucks/caddy-script.
+
+Domain:                       https://${domain}
+MariaDB root password:        ${MARIADB_ROOT_PASS}
+Shopware database name:       shopware
+Shopware database username:   shopware
+Shopware database password:   ${swdbpass}
+Shopware admin user:          admin
+Shopware admin password:      ${swadminpass}
 
 Please keep this information somewhere safe (preferably not here!)
 EOT
@@ -404,4 +516,5 @@ install_php
 install_caddy_service
 install_mariadb
 install_wordpress
+install_shopware
 finish
