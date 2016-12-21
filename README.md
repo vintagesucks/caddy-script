@@ -23,11 +23,12 @@ You'll be asked for your timezone, an email, the domain/ip to use and additional
 
 You can read the [Caddy Documentation](https://caddyserver.com/docs) if you need more information about Caddy's features and extensions.
 
-#### Credits
+#### Acknowledgements
 
 - [getcaddy.com](https://getcaddy.com/)
 - [caddy.service](https://denbeke.be/blog/servers/running-caddy-server-as-a-service-with-systemd/) file by Mathias Beke
 - [Random Password Generator](http://stackoverflow.com/a/26665585) by John1024/StackOverflow
+- [Validating an IP Address in a Bash Script](http://www.linuxjournal.com/content/validating-ip-address-bash-script) by Mitch Frazier
 
 ---
 
