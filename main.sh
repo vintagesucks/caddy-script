@@ -336,6 +336,13 @@ function install_wordpress()
         done
       } | sort -R | awk '{printf "%s",$1}')"
 
+    # Protocol
+    if valid_ip ${domain}; then
+      protocol="http://"
+    else
+      protocol="https://"
+    fi
+
     # Download and install wp-cli
     curl -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
     chmod +x /usr/local/bin/wp
@@ -344,7 +351,7 @@ function install_wordpress()
     # create wp-config.php
     runuser -l caddy -c "wp core config --path=/home/caddy/${domain}/www --dbname=wordpress --dbuser=wordpress --dbpass=${wpdbpass} --dbhost=localhost"
     #install WordPress
-    runuser -l caddy -c "wp core install --path=/home/caddy/${domain}/www --url=${domain} --title=${domain} --admin_user=admin --admin_password=${wpadminpass} --admin_email=${email} --skip-email"
+    runuser -l caddy -c "wp core install --path=/home/caddy/${domain}/www --url=${protocol}${domain} --title=${domain} --admin_user=admin --admin_password=${wpadminpass} --admin_email=${email} --skip-email"
   fi
 }
 
