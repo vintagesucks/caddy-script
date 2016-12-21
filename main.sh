@@ -5,7 +5,8 @@
 #   Homepage: https://github.com/vintagesucks/caddy-script
 #
 
-checkLogfile() {
+function checkLogfile()
+{
   if [ ! -f /home/caddy/caddy-script.log ]; then
     sleep 0
   else
@@ -13,10 +14,11 @@ checkLogfile() {
     echo " >> You already installed Caddy with caddy-script!"
     echo " >> Please view /home/caddy/caddy-script.log for your details."
     exit
-fi
+  fi
 }
 
-readEmail() {
+function readEmail()
+{
   read -e -p "Enter an email address (e.g. admin@example.org) " -r email
   if [[ ${#email} -gt 2 ]]; then
     sleep 0
@@ -26,7 +28,8 @@ readEmail() {
   fi
 }
 
-readDomain() {
+function readDomain()
+{
   read -e -p "Enter a domain (e.g. example.org) " -r domain
   if [[ "${#domain}" -lt 1 ]]; then
     echo " >> Please enter a valid domain!"
@@ -36,22 +39,24 @@ readDomain() {
 
 function valid_ip()
 {
-    local  ip=$1
-    local  stat=1
+  local ip=$1
+  local stat=1
 
-    if [[ $ip =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
-        OIFS=$IFS
-        IFS='.'
-        ip=($ip)
-        IFS=$OIFS
-        [[ ${ip[0]} -le 255 && ${ip[1]} -le 255 \
-            && ${ip[2]} -le 255 && ${ip[3]} -le 255 ]]
-        stat=$?
-    fi
-    return $stat
+  if [[ $ip =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+    OIFS=$IFS
+    IFS='.'
+    ip=($ip)
+    IFS=$OIFS
+    [[ ${ip[0]} -le 255 && ${ip[1]} -le 255 \
+      && ${ip[2]} -le 255 && ${ip[3]} -le 255 ]]
+    stat=$?
+  fi
+
+  return $stat
 }
 
-readCaddyExtensions() {
+function readCaddyExtensions()
+{
   read -e -p "Enter the Caddy extensions you want (e.g. git,upload) " -r caddy_extensions
   if [[ "${#caddy_extensions}" = 0 ]]; then
     read -p "Are you sure you want to continue without additional Caddy features? (Y/N)" -n 1 -r
@@ -67,7 +72,8 @@ readCaddyExtensions() {
   fi
 }
 
-readWordPress() {
+function readWordPress()
+{
   read -p "Install WordPress? (Y/N)" -n 1 -r
   echo
   if [[ "$REPLY" =~ ^[Yy]$ ]]; then
@@ -80,7 +86,8 @@ readWordPress() {
   fi
 }
 
-readStartSetup() {
+function readStartSetup()
+{
   read -p "Continue with setup? (Y/N)" -n 1 -r
   echo
   if [[ "$REPLY" =~ ^[Yy]$ ]]; then
@@ -94,7 +101,7 @@ readStartSetup() {
   fi
 }
 
-prepare()
+function prepare()
 {
   checkLogfile
   sudo dpkg-reconfigure tzdata
@@ -111,19 +118,19 @@ prepare()
   readStartSetup
 }
 
-check_root()
+function check_root()
 {
   echo "Checking if logged in user is root."
   _uid="$(id -u)"
   if [ "$_uid" != 0 ]; then
-  echo " >>> You have to run caddy-script as root."
-  exit
+    echo " >>> You have to run caddy-script as root."
+    exit
   else
-  echo "User is root."
+    echo "User is root."
   fi
 }
 
-create_user()
+function create_user()
 {
   echo "Checking if user caddy already exists."
   if [ "$(getent passwd caddy)" ] ; then
@@ -139,7 +146,8 @@ create_user()
   fi
 }
 
-install_caddy() {
+function install_caddy()
+{
   echo "Installing Caddy."
   sudo -u caddy curl -fsSL https://getcaddy.com | bash -s "${caddy_extensions}"
   echo "Setting permissions for Caddy."
@@ -155,7 +163,7 @@ install_caddy() {
   fi
 }
 
-create_caddyfile()
+function create_caddyfile()
 {
   # Redirect www. if domain is not an ip address
   if valid_ip ${domain}; then
@@ -219,7 +227,7 @@ EOT
 EOT
 }
 
-install_php()
+function install_php()
 {
   echo "Adding PHP7 repository"
   sudo add-apt-repository ppa:ondrej/php -y
@@ -235,7 +243,7 @@ install_php()
   sudo service php7.0-fpm restart
 }
 
-install_caddy_service()
+function install_caddy_service()
 {
   echo "Registering Caddy as a Service"
   sudo cat <<EOT >> /etc/systemd/system/caddy.service
@@ -261,45 +269,47 @@ EOT
   echo "Successfully registered Caddy as a Service."
 }
 
-install_mariadb() {
+function install_mariadb()
+{
   choose() { echo ${1:RANDOM%${#1}:1} $RANDOM; }
   MARIADB_ROOT_PASS="$({ choose '0123456789'
     choose 'abcdefghijklmnopqrstuvwxyz'
     choose 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
     for i in $( seq 1 $(( 4 + RANDOM % 8 )) )
-       do
-          choose '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-       done
-   } | sort -R | awk '{printf "%s",$1}')"
+      do
+        choose '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+      done
+    } | sort -R | awk '{printf "%s",$1}')"
   sudo apt-get install mariadb-server -y
   apt install expect -y
 	SECURE_MYSQL=$(expect -c "
-	set timeout 5
-	spawn mysql_secure_installation
-	expect \"Enter current password for root (enter for none):\"
-	send \"\r\"
-	expect \"Set root password? \[Y/n\]\"
-	send \"y\r\"
-	expect \"New password:\"
-	send \"${MARIADB_ROOT_PASS}\r\"
-	expect \"Re-enter new password:\"
-	send \"${MARIADB_ROOT_PASS}\r\"
-	expect \"Remove anonymous users? \[Y/n\]\"
-	send \"y\r\"
-	expect \"Disallow root login remotely? \[Y/n\]\"
-	send \"n\r\"
-	expect \"Remove test database and access to it? \[Y/n\]\"
-	send \"y\r\"
-	expect \"Reload privilege tables now? \[Y/n\]\"
-	send \"y\r\"
-	expect eof
-	")
+  	set timeout 5
+  	spawn mysql_secure_installation
+  	expect \"Enter current password for root (enter for none):\"
+  	send \"\r\"
+  	expect \"Set root password? \[Y/n\]\"
+  	send \"y\r\"
+  	expect \"New password:\"
+  	send \"${MARIADB_ROOT_PASS}\r\"
+  	expect \"Re-enter new password:\"
+  	send \"${MARIADB_ROOT_PASS}\r\"
+  	expect \"Remove anonymous users? \[Y/n\]\"
+  	send \"y\r\"
+  	expect \"Disallow root login remotely? \[Y/n\]\"
+  	send \"n\r\"
+  	expect \"Remove test database and access to it? \[Y/n\]\"
+  	send \"y\r\"
+  	expect \"Reload privilege tables now? \[Y/n\]\"
+  	send \"y\r\"
+  	expect eof
+  	")
   echo "${SECURE_MYSQL}"
   apt remove expect -y
   apt autoremove -y
 }
 
-install_wordpress() {
+function install_wordpress()
+{
   if [[ "$wordpress" = 1 ]]; then
     echo "Installing WordPress"
     choose() { echo ${1:RANDOM%${#1}:1} $RANDOM; }
@@ -307,39 +317,38 @@ install_wordpress() {
       choose 'abcdefghijklmnopqrstuvwxyz'
       choose 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
       for i in $( seq 1 $(( 4 + RANDOM % 8 )) )
-         do
-            choose '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-         done
-     } | sort -R | awk '{printf "%s",$1}')"
+        do
+          choose '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        done
+      } | sort -R | awk '{printf "%s",$1}')"
     mysql -uroot -e "create database wordpress;"
     mysql -uroot -e "grant usage on *.* to wordpress@localhost identified by '${wpdbpass}';"
     mysql -uroot -e "grant all privileges on wordpress.* to wordpress@localhost;"
     mysql -uroot -e "FLUSH PRIVILEGES;"
 
-	choose() { echo ${1:RANDOM%${#1}:1} $RANDOM; }
-	wpadminpass="$({ choose '0123456789'
+    choose() { echo ${1:RANDOM%${#1}:1} $RANDOM; }
+    wpadminpass="$({ choose '0123456789'
       choose 'abcdefghijklmnopqrstuvwxyz'
       choose 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
       for i in $( seq 1 $(( 4 + RANDOM % 8 )) )
-         do
-            choose '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-         done
-     } | sort -R | awk '{printf "%s",$1}')"
+        do
+          choose '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        done
+      } | sort -R | awk '{printf "%s",$1}')"
 
-	# Download and install wp-cli
-	curl -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-	chmod +x /usr/local/bin/wp
-	# Download latest WordPress version
-	runuser -l caddy -c "wp core download --path=/home/caddy/${domain}/www"
-	# create wp-config.php
-	runuser -l caddy -c "wp core config --path=/home/caddy/${domain}/www --dbname=wordpress --dbuser=wordpress --dbpass=${wpdbpass} --dbhost=localhost"
-	#install WordPress
-	runuser -l caddy -c "wp core install --path=/home/caddy/${domain}/www --url=${domain} --title=${domain} --admin_user=admin --admin_password=${wpadminpass} --admin_email=${email} --skip-email"
-
+    # Download and install wp-cli
+    curl -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+    chmod +x /usr/local/bin/wp
+    # Download latest WordPress version
+    runuser -l caddy -c "wp core download --path=/home/caddy/${domain}/www"
+    # create wp-config.php
+    runuser -l caddy -c "wp core config --path=/home/caddy/${domain}/www --dbname=wordpress --dbuser=wordpress --dbpass=${wpdbpass} --dbhost=localhost"
+    #install WordPress
+    runuser -l caddy -c "wp core install --path=/home/caddy/${domain}/www --url=${domain} --title=${domain} --admin_user=admin --admin_password=${wpadminpass} --admin_email=${email} --skip-email"
   fi
 }
 
-finish()
+function finish()
 {
   echo "Granting permissions for"
   sudo chown -R www-data:www-data /home/caddy/
