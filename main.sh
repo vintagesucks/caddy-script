@@ -194,15 +194,15 @@ EOT
   log $domain/log/access.log {
     rotate {
       size 50
-    	age  30
-    	keep 10
+      age  30
+      keep 10
     }
   }
   errors {
     log ${domain}/log/error.log {
-    	size 50
-    	age  30
-    	keep 10
+      size 50
+      age  30
+      keep 10
     }
   }
   gzip
