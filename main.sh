@@ -296,14 +296,28 @@ install_wordpress() {
     mysql -uroot -e "grant usage on *.* to wordpress@localhost identified by '${wpdbpass}';"
     mysql -uroot -e "grant all privileges on wordpress.* to wordpress@localhost;"
     mysql -uroot -e "FLUSH PRIVILEGES;"
-    runuser -l caddy -c "wget -P /home/caddy/${domain} http://wordpress.org/latest.tar.gz"
-    runuser -l caddy -c "tar -xzf /home/caddy/${domain}/latest.tar.gz -C /home/caddy/${domain}"
-    runuser -l caddy -c "mv /home/caddy/${domain}/wordpress /home/caddy/${domain}/www"
-    runuser -l caddy -c "rm /home/caddy/${domain}/latest.tar.gz"
-    cp /home/caddy/${domain}/www/wp-config-sample.php /home/caddy/${domain}/www/wp-config.php
-    sudo sed -i "s/database_name_here/wordpress/g" /home/caddy/${domain}/www/wp-config.php
-    sudo sed -i "s/username_here/wordpress/g" /home/caddy/${domain}/www/wp-config.php
-    sudo sed -i "s/password_here/${wpdbpass}/g" /home/caddy/${domain}/www/wp-config.php
+
+	choose() { echo ${1:RANDOM%${#1}:1} $RANDOM; }
+	wpadminpass="$({ choose '!@#%^\&'
+      choose '0123456789'
+      choose 'abcdefghijklmnopqrstuvwxyz'
+      choose 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+      for i in $( seq 1 $(( 4 + RANDOM % 8 )) )
+         do
+            choose '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+         done
+     } | sort -R | awk '{printf "%s",$1}')"
+
+	# Download and install wp-cli
+	curl -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+	chmod +x /usr/local/bin/wp
+	# Download latest WordPress version
+	runuser -l caddy -c "wp core download --path=/home/caddy/${domain}/www"
+	# create wp-config.php
+	runuser -l caddy -c "wp core config --path=/home/caddy/${domain}/www --dbname=wordpress --dbuser=wordpress --dbpass=${wpdbpass} --dbhost=localhost"
+	#install WordPress
+	runuser -l caddy -c "wp core install --path=/home/caddy/${domain}/www --url=https//${domain} --title=${domain} --admin_user=admin --admin_password=${wpadminpass} --admin_email=${email} --skip-email"
+
   fi
 }
 
@@ -324,6 +338,8 @@ MariaDB root password:        ${MARIADB_ROOT_PASS}
 WordPress database name:      wordpress
 WordPress database username:  wordpress
 WordPress database password:  ${wpdbpass}
+WordPress admin user:         admin
+WordPress admin password:     ${wpadminpass}
 
 Please keep this information somewhere safe (preferably not here!)
 EOT
