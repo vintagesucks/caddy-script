@@ -34,6 +34,23 @@ readDomain() {
   fi
 }
 
+function valid_ip()
+{
+    local  ip=$1
+    local  stat=1
+
+    if [[ $ip =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+        OIFS=$IFS
+        IFS='.'
+        ip=($ip)
+        IFS=$OIFS
+        [[ ${ip[0]} -le 255 && ${ip[1]} -le 255 \
+            && ${ip[2]} -le 255 && ${ip[3]} -le 255 ]]
+        stat=$?
+    fi
+    return $stat
+}
+
 readCaddyExtensions() {
   read -e -p "Enter the Caddy extensions you want (e.g. git,upload) " -r caddy_extensions
   if [[ "${#caddy_extensions}" = 0 ]]; then
@@ -128,67 +145,7 @@ install_caddy() {
   echo "Setting permissions for Caddy."
   sudo setcap cap_net_bind_service=+ep /usr/local/bin/caddy
   echo "Creating Caddyfile."
-  if [ "$wordpress" = 1 ]; then
-    sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
-www.${domain} {
-  redir https://${domain}{uri}
-}
-
-${domain} {
-  root /home/caddy/${domain}/www
-  log $domain/log/access.log {
-    rotate {
-      size 50
-    	age  30
-    	keep 10
-    }
-  }
-  errors {
-    log ${domain}/log/error.log {
-    	size 50
-    	age  30
-    	keep 10
-    }
-  }
-  gzip
-  fastcgi / 127.0.0.1:9000 php {
-    env PATH /bin
-  }
-  rewrite {
-    if {path} not_match ^\/wp-admin
-    to {path} {path}/ /index.php?_url={uri}
-  }
-}
-EOT
-  else
-    sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
-www.${domain} {
-  redir https://${domain}{uri}
-}
-
-${domain} {
-  root /home/caddy/${domain}/www
-  log $domain/log/access.log {
-    rotate {
-      size 50
-    	age  30
-    	keep 10
-    }
-  }
-  errors {
-    log ${domain}/log/error.log {
-    	size 50
-    	age  30
-    	keep 10
-    }
-  }
-  gzip
-  fastcgi / 127.0.0.1:9000 php {
-    env PATH /bin
-  }
-}
-EOT
-  fi
+  create_caddyfile
   echo "Setting up directorys for ${domain}"
   runuser -l caddy -c "mkdir ${domain}"
   runuser -l caddy -c "mkdir ${domain}/log"
@@ -196,6 +153,70 @@ EOT
     runuser -l caddy -c "mkdir ${domain}/www"
     runuser -l caddy -c "echo 'Hello World' > ${domain}/www/index.html"
   fi
+}
+
+create_caddyfile()
+{
+  # Redirect www. if domain is not an ip address
+  if valid_ip ${domain}; then
+    sleep 0
+  else
+    sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
+www.${domain} {
+  redir https://${domain}{uri}
+}
+
+EOT
+  fi
+
+  # Open Caddyfile
+  if valid_ip ${domain}; then
+    sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
+${domain}:80 {
+EOT
+  else
+    sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
+${domain} {
+EOT
+  fi
+
+  # Add basic configuration
+  sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
+  root /home/caddy/${domain}/www
+  log $domain/log/access.log {
+    rotate {
+      size 50
+    	age  30
+    	keep 10
+    }
+  }
+  errors {
+    log ${domain}/log/error.log {
+    	size 50
+    	age  30
+    	keep 10
+    }
+  }
+  gzip
+  fastcgi / 127.0.0.1:9000 php {
+    env PATH /bin
+  }
+EOT
+
+  # Add redirects for WordPress (if selected)
+  if [ "$wordpress" = 1 ]; then
+    sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
+  rewrite {
+    if {path} not_match ^\/wp-admin
+    to {path} {path}/ /index.php?_url={uri}
+  }
+EOT
+  fi
+
+  # Close basic Caddyfile
+  sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
+}
+EOT
 }
 
 install_php()
@@ -316,7 +337,7 @@ install_wordpress() {
 	# create wp-config.php
 	runuser -l caddy -c "wp core config --path=/home/caddy/${domain}/www --dbname=wordpress --dbuser=wordpress --dbpass=${wpdbpass} --dbhost=localhost"
 	#install WordPress
-	runuser -l caddy -c "wp core install --path=/home/caddy/${domain}/www --url=https//${domain} --title=${domain} --admin_user=admin --admin_password=${wpadminpass} --admin_email=${email} --skip-email"
+	runuser -l caddy -c "wp core install --path=/home/caddy/${domain}/www --url=${domain} --title=${domain} --admin_user=admin --admin_password=${wpadminpass} --admin_email=${email} --skip-email"
 
   fi
 }

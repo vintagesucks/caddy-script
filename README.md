@@ -12,13 +12,12 @@ Caddy installation script for DigitalOcean (fully automated)
 #### Requirements
 
 - Clean Ubuntu 16.04. Droplet on [DigitalOcean](https://m.do.co/c/5585c0623c5d)*
-- Domain pointed to Droplet
 
 #### Usage
 
 `bash <(curl -s https://raw.githubusercontent.com/vintagesucks/caddy-script/master/main.sh)`
 
-You'll be asked for your timezone, an email, the domain to use and additional features you want.
+You'll be asked for your timezone, an email, the domain/ip to use and additional features you want.
 
 #### Help
 
