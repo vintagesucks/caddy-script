@@ -226,9 +226,6 @@ EOT
     }
   }
   gzip
-  fastcgi / 127.0.0.1:9000 php {
-    env PATH /bin
-  }
 EOT
 
   # fastcgi
