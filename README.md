@@ -12,7 +12,7 @@ Caddy installation script for DigitalOcean (fully automated)
 
 #### Requirements
 
-- Clean Ubuntu 16.04. Droplet on [DigitalOcean](https://m.do.co/c/5585c0623c5d)*
+- Clean Ubuntu 16.04. Droplet on [DigitalOcean](https://m.do.co/c/3c23791febd7)*
 
 #### Usage
 
@@ -28,8 +28,8 @@ You can read the [Caddy Documentation](https://caddyserver.com/docs) if you need
 
 - [getcaddy.com](https://getcaddy.com/)
 - [caddy.service](https://denbeke.be/blog/servers/running-caddy-server-as-a-service-with-systemd/) file by Mathias Beke
-- [Random Password Generator](http://stackoverflow.com/a/26665585) by John1024/StackOverflow
-- [Validating an IP Address in a Bash Script](http://www.linuxjournal.com/content/validating-ip-address-bash-script) by Mitch Frazier
+- [Random Password Generator](https://stackoverflow.com/questions/26665389/random-password-generator-bash/26665585#26665585) by John1024/StackOverflow
+- [Validating an IP Address in a Bash Script](https://www.linuxjournal.com/content/validating-ip-address-bash-script) by Mitch Frazier
 
 ---
 
