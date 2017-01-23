@@ -433,7 +433,7 @@ function install_shopware()
     chmod +x /usr/local/bin/sw
 
     echo "Installing Shopware via Shopware CLI Tools"
-    sw install:release --release=5.2.14 --install-dir=/home/caddy/${domain}/www --db-user=shopware --db-password=${swdbpass} --admin-username=admin --admin-password=${swadminpass} --db-name=shopware --shop-path=CS_SW_PATH_PLACEHOLDER --shop-host=${domain}
+    sw install:release --release=5.2.15 --install-dir=/home/caddy/${domain}/www --db-user=shopware --db-password=${swdbpass} --admin-username=admin --admin-password=${swadminpass} --db-name=shopware --shop-path=CS_SW_PATH_PLACEHOLDER --shop-host=${domain}
     mysql -uroot -e "UPDATE shopware.s_core_shops SET base_path = NULL WHERE s_core_shops.id = 1;"
   fi
 }
