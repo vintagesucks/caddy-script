@@ -1,5 +1,7 @@
 language: bash
+os:
+  - linux
 sudo: required
 
 script:
-    - bash main.sh
+  - bash main.sh
