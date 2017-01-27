@@ -127,7 +127,7 @@ function readShopware()
 function readPhpMyAdmin()
 {
   if [[ TRAVIS==true ]]; then
-    phpmyadmin=1
+    phpmyadmin=0
   else
     read -p "Install phpMyAdmin? (Y/N)" -n 1 -r
     echo
@@ -184,13 +184,17 @@ function prepare()
 
 function check_root()
 {
-  echo "Checking if logged in user is root."
-  _uid="$(id -u)"
-  if [ "$_uid" != 0 ]; then
-    echo " >>> You have to run caddy-script as root."
-    exit
+  if [[ TRAVIS==true ]]; then
+    sleep 0
   else
-    echo "User is root."
+    echo "Checking if logged in user is root."
+    _uid="$(id -u)"
+    if [ "$_uid" != 0 ]; then
+      echo " >>> You have to run caddy-script as root."
+      exit
+    else
+      echo "User is root."
+    fi
   fi
 }
 
