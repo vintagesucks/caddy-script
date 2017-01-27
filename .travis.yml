@@ -3,4 +3,3 @@ sudo: required
 
 script:
     - bash main.sh
-    
