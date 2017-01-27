@@ -232,7 +232,7 @@ EOT
   if [ "$shopware" = 1 ]; then
     sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
   fastcgi / 127.0.0.1:9000 php {
-    index shopware.php
+    index shopware.php index.php
     env PATH /bin
   }
 EOT
