@@ -104,6 +104,20 @@ function readShopware()
   fi
 }
 
+function readPhpMyAdmin()
+{
+  read -p "Install phpMyAdmin? (Y/N)" -n 1 -r
+  echo
+  if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+    phpmyadmin=1
+  elif [[ "$REPLY" =~ ^[Nn]$ ]]; then
+    phpmyadmin=0
+  else
+    echo " >> Please enter either Y or N."
+    readPhpMyAdmin
+  fi
+}
+
 function readStartSetup()
 {
   read -p "Continue with setup? (Y/N)" -n 1 -r
@@ -128,12 +142,14 @@ function prepare()
   readCaddyExtensions
   readWordPress
   readShopware
+  readPhpMyAdmin
   echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
   echo "Caddy Features: ${caddy_extensions}"
   echo "        Domain: ${domain}"
   echo "         Email: ${email}"
   echo "     WordPress: ${wordpress}"
   echo "      Shopware: ${shopware}"
+  echo "    phpMyAdmin: ${phpmyadmin}"
   echo ""
   readStartSetup
 }
@@ -283,6 +299,20 @@ function install_php()
   sudo sed -i "s/${OLDPHPCONF}/${NEWPHPCONF}/g" /etc/php/7.0/fpm/pool.d/www.conf
   echo "Restarting PHP"
   sudo service php7.0-fpm restart
+}
+
+function install_phpmyadmin()
+{
+  if [[ ${phpmyadmin} == 1 ]]; then
+    mkdir /home/caddy/${domain}/www/phpmyadmin
+    echo "Installing phpMyAdmin via Git";
+    cd /home/caddy/${domain}/www/phpmyadmin/
+    git clone https://github.com/phpmyadmin/phpmyadmin.git .
+    git checkout STABLE
+    echo "Installing Composer"
+    apt install composer -y
+    composer update --no-dev
+  fi
 }
 
 function install_caddy_service()
@@ -510,6 +540,7 @@ check_root
 create_user
 install_caddy
 install_php
+install_phpmyadmin
 install_caddy_service
 install_mariadb
 install_wordpress

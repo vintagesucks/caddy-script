@@ -10,6 +10,7 @@ Caddy installation script for DigitalOcean (fully automated)
 - [x] Configure Caddyfile with gzip, fast-cgi, logs & redirects
 - [x] Install WordPress [optional]
 - [x] Install Shopware [optional]
+- [x] Install phpMyAdmin [optional]  
 
 #### Requirements
 
