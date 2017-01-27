@@ -1,4 +1,4 @@
-# :whale: caddy-script
+# :whale: caddy-script [![Code Climate](https://codeclimate.com/github/vintagesucks/caddy-script/badges/gpa.svg)](https://codeclimate.com/github/vintagesucks/caddy-script) [![Issue Count](https://codeclimate.com/github/vintagesucks/caddy-script/badges/issue_count.svg)](https://codeclimate.com/github/vintagesucks/caddy-script)
 Caddy installation script for DigitalOcean (fully automated)
 
 #### Features
