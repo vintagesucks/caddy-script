@@ -177,8 +177,8 @@ function install_caddy()
   echo "Setting up directorys for ${domain}"
   runuser -l caddy -c "mkdir ${domain}"
   runuser -l caddy -c "mkdir ${domain}/log"
-  if [ "$wordpress" = 0 ]; then
-    runuser -l caddy -c "mkdir ${domain}/www"
+  runuser -l caddy -c "mkdir ${domain}/www"
+  if [ "$wordpress" = 0 && "$shopware" = 0 ]; then
     runuser -l caddy -c "echo 'Hello World' > ${domain}/www/index.html"
   fi
 }
