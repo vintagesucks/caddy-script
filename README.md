@@ -1,4 +1,4 @@
-# :whale: caddy-script [![Code Climate](https://codeclimate.com/github/vintagesucks/caddy-script/badges/gpa.svg)](https://codeclimate.com/github/vintagesucks/caddy-script) [![Issue Count](https://img.shields.io/codeclimate/issues/github/vintagesucks/caddy-script.svg)](https://codeclimate.com/github/vintagesucks/caddy-script) [![Travis CI](https://api.travis-ci.org/vintagesucks/caddy-script.svg?branch=master)](https://travis-ci.org/vintagesucks/caddy-script)  
+# :whale: caddy-script [![Code Climate](https://codeclimate.com/github/vintagesucks/caddy-script/badges/gpa.svg)](https://codeclimate.com/github/vintagesucks/caddy-script) [![Issue Count](https://img.shields.io/codeclimate/issues/github/vintagesucks/caddy-script.svg)](https://codeclimate.com/github/vintagesucks/caddy-script/issues) [![Travis CI](https://api.travis-ci.org/vintagesucks/caddy-script.svg?branch=master)](https://travis-ci.org/vintagesucks/caddy-script)  
 
 Caddy installation script for DigitalOcean (fully automated)
 
