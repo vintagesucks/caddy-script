@@ -19,21 +19,29 @@ function checkLogfile()
 
 function readEmail()
 {
-  read -e -p "Enter an email address (e.g. admin@example.org) " -r email
-  if [[ ${#email} -gt 2 ]]; then
-    sleep 0
+  if [[ TRAVIS==true ]]; then
+    email="travis@example.org"
   else
-    echo " >> Please enter a valid email address!"
-    readEmail
+    read -e -p "Enter an email address (e.g. admin@example.org) " -r email
+    if [[ ${#email} -gt 2 ]]; then
+      sleep 0
+    else
+      echo " >> Please enter a valid email address!"
+      readEmail
+    fi
   fi
 }
 
 function readDomain()
 {
-  read -e -p "Enter a domain (e.g. example.org) " -r domain
-  if [[ "${#domain}" -lt 1 ]]; then
-    echo " >> Please enter a valid domain!"
-    readDomain
+  if [[ TRAVIS==true ]]; then
+    domain="127.0.0.1"
+  else
+    read -e -p "Enter a domain (e.g. example.org) " -r domain
+    if [[ "${#domain}" -lt 1 ]]; then
+      echo " >> Please enter a valid domain!"
+      readDomain
+    fi
   fi
 }
 
@@ -57,79 +65,99 @@ function valid_ip()
 
 function readCaddyExtensions()
 {
-  read -e -p "Enter the Caddy extensions you want (e.g. git,upload) " -r caddy_extensions
-  if [[ "${#caddy_extensions}" = 0 ]]; then
-    read -p "Are you sure you want to continue without additional Caddy features? (Y/N)" -n 1 -r
-    echo
-    if [[ "$REPLY" =~ ^[Yy]$ ]]; then
-      sleep 0
-    elif [[ "$REPLY" =~ ^[Nn]$ ]]; then
-      readCaddyExtensions;
-    else
-      echo " >> Please enter either Y or N."
-      readCaddyExtensions
+  if [[ TRAVIS==true ]]; then
+    caddy_extensions="git"
+  else
+    read -e -p "Enter the Caddy extensions you want (e.g. git,upload) " -r caddy_extensions
+    if [[ "${#caddy_extensions}" = 0 ]]; then
+      read -p "Are you sure you want to continue without additional Caddy features? (Y/N)" -n 1 -r
+      echo
+      if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+        sleep 0
+      elif [[ "$REPLY" =~ ^[Nn]$ ]]; then
+        readCaddyExtensions;
+      else
+        echo " >> Please enter either Y or N."
+        readCaddyExtensions
+      fi
     fi
   fi
 }
 
 function readWordPress()
 {
-  read -p "Install WordPress? (Y/N)" -n 1 -r
-  echo
-  if [[ "$REPLY" =~ ^[Yy]$ ]]; then
-    wordpress=1
-  elif [[ "$REPLY" =~ ^[Nn]$ ]]; then
+  if [[ TRAVIS==true ]]; then
     wordpress=0
   else
-    echo " >> Please enter either Y or N."
-    readWordPress
+    read -p "Install WordPress? (Y/N)" -n 1 -r
+    echo
+    if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+      wordpress=1
+    elif [[ "$REPLY" =~ ^[Nn]$ ]]; then
+      wordpress=0
+    else
+      echo " >> Please enter either Y or N."
+      readWordPress
+    fi
   fi
 }
 
 function readShopware()
 {
-  if [ "$wordpress" = 1 ]; then
+  if [[ TRAVIS==true ]]; then
     shopware=0
   else
-    read -p "Install Shopware? (Y/N)" -n 1 -r
-    echo
-    if [[ "$REPLY" =~ ^[Yy]$ ]]; then
-      shopware=1
-    elif [[ "$REPLY" =~ ^[Nn]$ ]]; then
+    if [ "$wordpress" = 1 ]; then
       shopware=0
     else
-      echo " >> Please enter either Y or N."
-      readShopware
+      read -p "Install Shopware? (Y/N)" -n 1 -r
+      echo
+      if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+        shopware=1
+      elif [[ "$REPLY" =~ ^[Nn]$ ]]; then
+        shopware=0
+      else
+        echo " >> Please enter either Y or N."
+        readShopware
+      fi
     fi
   fi
 }
 
 function readPhpMyAdmin()
 {
-  read -p "Install phpMyAdmin? (Y/N)" -n 1 -r
-  echo
-  if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+  if [[ TRAVIS==true ]]; then
     phpmyadmin=1
-  elif [[ "$REPLY" =~ ^[Nn]$ ]]; then
-    phpmyadmin=0
   else
-    echo " >> Please enter either Y or N."
-    readPhpMyAdmin
+    read -p "Install phpMyAdmin? (Y/N)" -n 1 -r
+    echo
+    if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+      phpmyadmin=1
+    elif [[ "$REPLY" =~ ^[Nn]$ ]]; then
+      phpmyadmin=0
+    else
+      echo " >> Please enter either Y or N."
+      readPhpMyAdmin
+    fi
   fi
 }
 
 function readStartSetup()
 {
-  read -p "Continue with setup? (Y/N)" -n 1 -r
-  echo
-  if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+  if [[ TRAVIS==true ]]; then
     sleep 0
-  elif [[ "$REPLY" =~ ^[Nn]$ ]]; then
-    echo " >> Setup cancelled."
-    exit
   else
-    echo " >> Please enter either Y or N."
-    readStartSetup
+    read -p "Continue with setup? (Y/N)" -n 1 -r
+    echo
+    if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+      sleep 0
+    elif [[ "$REPLY" =~ ^[Nn]$ ]]; then
+      echo " >> Setup cancelled."
+      exit
+    else
+      echo " >> Please enter either Y or N."
+      readStartSetup
+    fi
   fi
 }
 
