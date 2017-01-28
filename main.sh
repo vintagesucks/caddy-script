@@ -372,8 +372,12 @@ StartLimitInterval=600
 [Install]
 WantedBy=multi-user.target
 EOT
-  sudo systemctl enable caddy
-  systemctl daemon-reload
+  if [[ TRAVIS==true ]]; then
+    sleep 0
+  else
+    sudo systemctl enable caddy
+    systemctl daemon-reload
+  fi
   echo "Successfully registered Caddy as a Service."
 }
 
