@@ -1,7 +1,9 @@
 language: bash
-os:
-  - linux
 sudo: required
 
-script:
-  - bash main.sh
+services:
+  - docker
+
+before_install:
+  - docker build -t vintagesucks/travis-tests .
+  - docker run vintagesucks/travis-tests /bin/bash -c "apt-get update; apt-get install -y curl sudo software-properties-common; bash <(curl -s https://raw.githubusercontent.com/vintagesucks/caddy-script/master/main.sh)"
