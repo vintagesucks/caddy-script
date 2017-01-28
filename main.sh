@@ -494,7 +494,7 @@ Thanks for using caddy-script!
 If you run into any issues related to this setup, please open an issue at
 https://github.com/vintagesucks/caddy-script.
 
-Domain:                       https://${domain}
+Domain:                       ${protocol}${domain}
 MariaDB root password:        ${MARIADB_ROOT_PASS}
 WordPress database name:      wordpress
 WordPress database username:  wordpress
