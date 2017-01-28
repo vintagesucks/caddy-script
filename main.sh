@@ -568,7 +568,11 @@ MariaDB root password:        ${MARIADB_ROOT_PASS}
 Please keep this information somewhere safe (preferably not here!)
 EOT
   fi
-  service caddy start
+  if [[ TRAVIS==true ]]; then
+    sleep 0
+  else
+    service caddy start
+  fi
   clear
   echo "Successfully installed Caddy!"
   echo "Please view /home/caddy/caddy-script.log for details."
