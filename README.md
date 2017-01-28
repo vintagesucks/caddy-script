@@ -29,8 +29,7 @@ You can read the [Caddy Documentation](https://caddyserver.com/docs) if you need
 #### Acknowledgements
 
 - [getcaddy.com](https://getcaddy.com/)
-- [caddy.service](https://denbeke.be/blog/servers/running-caddy-server-as-a-service-with-systemd/) file by Mathias Beke
-- [Random Password Generator](https://stackoverflow.com/questions/26665389/random-password-generator-bash/26665585#26665585) by John1024/StackOverflow
+- [caddy.service](https://denbeke.be/blog/servers/running-caddy-server-as-a-service-with-systemd/) file by Mathias Beke  
 - [Validating an IP Address in a Bash Script](https://www.linuxjournal.com/content/validating-ip-address-bash-script) by Mitch Frazier
 
 ---

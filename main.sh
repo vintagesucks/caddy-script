@@ -387,15 +387,7 @@ EOT
 
 function install_mariadb()
 {
-  choose() { echo ${1:RANDOM%${#1}:1} $RANDOM; }
-  MARIADB_ROOT_PASS="$({ choose '0123456789'
-    choose 'abcdefghijklmnopqrstuvwxyz'
-    choose 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    for i in $( seq 1 $(( 4 + RANDOM % 8 )) )
-      do
-        choose '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-      done
-    } | sort -R | awk '{printf "%s",$1}')"
+  MARIADB_ROOT_PASS=`dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev | tr -dc 'a-zA-Z0-9'`
   sudo apt-get install mariadb-server -y
   apt install expect -y
 	SECURE_MYSQL=$(expect -c "
@@ -428,29 +420,13 @@ function install_wordpress()
 {
   if [[ "$wordpress" = 1 ]]; then
     echo "Installing WordPress"
-    choose() { echo ${1:RANDOM%${#1}:1} $RANDOM; }
-    wpdbpass="$({ choose '0123456789'
-      choose 'abcdefghijklmnopqrstuvwxyz'
-      choose 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-      for i in $( seq 1 $(( 4 + RANDOM % 8 )) )
-        do
-          choose '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-        done
-      } | sort -R | awk '{printf "%s",$1}')"
+    wpdbpass=`dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev | tr -dc 'a-zA-Z0-9'`
     mysql -uroot -e "create database wordpress;"
     mysql -uroot -e "grant usage on *.* to wordpress@localhost identified by '${wpdbpass}';"
     mysql -uroot -e "grant all privileges on wordpress.* to wordpress@localhost;"
     mysql -uroot -e "FLUSH PRIVILEGES;"
 
-    choose() { echo ${1:RANDOM%${#1}:1} $RANDOM; }
-    wpadminpass="$({ choose '0123456789'
-      choose 'abcdefghijklmnopqrstuvwxyz'
-      choose 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-      for i in $( seq 1 $(( 4 + RANDOM % 8 )) )
-        do
-          choose '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-        done
-      } | sort -R | awk '{printf "%s",$1}')"
+    wpadminpass=`dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev | tr -dc 'a-zA-Z0-9'`
 
     # Protocol
     if valid_ip ${domain}; then
@@ -475,30 +451,14 @@ function install_shopware()
 {
   if [[ "$shopware" = 1 ]]; then
     echo "Installing Shopware"
-    choose() { echo ${1:RANDOM%${#1}:1} $RANDOM; }
-    swdbpass="$({ choose '0123456789'
-      choose 'abcdefghijklmnopqrstuvwxyz'
-      choose 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-      for i in $( seq 1 $(( 4 + RANDOM % 8 )) )
-        do
-          choose '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-        done
-      } | sort -R | awk '{printf "%s",$1}')"
+    swdbpass=`dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev | tr -dc 'a-zA-Z0-9'`
 
     mysql -uroot -e "create database shopware;"
     mysql -uroot -e "grant usage on *.* to shopware@localhost identified by '${swdbpass}';"
     mysql -uroot -e "grant all privileges on shopware.* to shopware@localhost;"
     mysql -uroot -e "FLUSH PRIVILEGES;"
 
-    choose() { echo ${1:RANDOM%${#1}:1} $RANDOM; }
-    swadminpass="$({ choose '0123456789'
-      choose 'abcdefghijklmnopqrstuvwxyz'
-      choose 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-      for i in $( seq 1 $(( 4 + RANDOM % 8 )) )
-        do
-          choose '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-        done
-      } | sort -R | awk '{printf "%s",$1}')"
+    swadminpass=`dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev | tr -dc 'a-zA-Z0-9'`
 
     echo "Installing required packages"
     apt install openjdk-9-jre-headless ant unzip -y
