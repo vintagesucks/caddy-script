@@ -572,8 +572,8 @@ EOT
     sleep 0
   else
     service caddy start
+    clear
   fi
-  clear
   echo "Successfully installed Caddy!"
   echo "Please view /home/caddy/caddy-script.log for details."
 }
