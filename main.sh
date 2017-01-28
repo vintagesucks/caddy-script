@@ -483,7 +483,7 @@ EOT
     sudo sed -i "s/${OLDMEMORYLIMIT}/${NEWMEMORYLIMIT}/g" /etc/php/7.0/fpm/php.ini
     OLDMAXFILESIZE="upload_max_filesize \= 2M"
     NEWMAXFILESIZE="upload_max_filesize \= 6M"
-    sudo sed -i "s/${OLDMEMORYLIMIT}/${NEWMEMORYLIMIT}/g" /etc/php/7.0/fpm/php.ini
+    sudo sed -i "s/${OLDMAXFILESIZE}/${NEWMAXFILESIZE}/g" /etc/php/7.0/fpm/php.ini
 
     echo "Installing Shopware specific packages"
     apt-get install libfreetype6 -y
