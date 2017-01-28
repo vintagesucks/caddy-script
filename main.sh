@@ -234,7 +234,7 @@ function install_caddy()
 function create_caddyfile()
 {
   # Redirect www. if domain is not an ip address
-  if valid_ip ${domain}; then
+  if valid_ip "${domain}"; then
     sleep 0
   else
     sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
@@ -246,7 +246,7 @@ EOT
   fi
 
   # Open Caddyfile
-  if valid_ip ${domain}; then
+  if valid_ip "${domain}"; then
     sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
 ${domain}:80 {
 EOT
@@ -340,9 +340,9 @@ function install_php()
 function install_phpmyadmin()
 {
   if [[ ${phpmyadmin} == 1 ]]; then
-    mkdir /home/caddy/${domain}/www/phpmyadmin
+    mkdir /home/caddy/"${domain}"/www/phpmyadmin
     echo "Installing phpMyAdmin via Git";
-    cd /home/caddy/${domain}/www/phpmyadmin/
+    cd /home/caddy/"${domain}"/www/phpmyadmin/
     git clone https://github.com/phpmyadmin/phpmyadmin.git .
     git checkout STABLE
     echo "Installing Composer"
@@ -503,7 +503,7 @@ function install_shopware()
     chmod +x /usr/local/bin/sw
 
     echo "Installing Shopware via Shopware CLI Tools"
-    sw install:release --release=5.2.15 --install-dir=/home/caddy/${domain}/www --db-user=shopware --db-password=${swdbpass} --admin-username=admin --admin-password=${swadminpass} --db-name=shopware --shop-path=CS_SW_PATH_PLACEHOLDER --shop-host=${domain}
+    sw install:release --release=5.2.15 --install-dir=/home/caddy/"${domain}"/www --db-user=shopware --db-password="${swdbpass}" --admin-username=admin --admin-password="${swadminpass}" --db-name=shopware --shop-path=CS_SW_PATH_PLACEHOLDER --shop-host="${domain}"
     mysql -uroot -e "UPDATE shopware.s_core_shops SET base_path = NULL WHERE s_core_shops.id = 1;"
   fi
 }
@@ -517,8 +517,8 @@ function finish()
   elif [ "$shopware" = 1 ]; then
     sudo chown -R www-data:www-data /home/caddy/
     sudo chown -R caddy /home/caddy/
-    sudo chown -R caddy /home/caddy/${domain}/www
-    sudo chown -R www-data:www-data /home/caddy/${domain}/www/var/cache
+    sudo chown -R caddy /home/caddy/"${domain}"/www
+    sudo chown -R www-data:www-data /home/caddy/"${domain}"/www/var/cache
   else
     sudo chown -R www-data:www-data /home/caddy/
     sudo chown -R caddy /home/caddy/
