@@ -19,7 +19,7 @@ function checkLogfile()
 
 function readEmail()
 {
-  if [[ $TRAVIS == true ]]; then
+  if [[ $TRAVIS_CI == 1 ]]; then
     email="travis@example.org"
   else
     read -e -p "Enter an email address (e.g. admin@example.org) " -r email
@@ -34,7 +34,7 @@ function readEmail()
 
 function readDomain()
 {
-  if [[ $TRAVIS == true ]]; then
+  if [[ $TRAVIS_CI == 1 ]]; then
     domain="127.0.0.1"
   else
     read -e -p "Enter a domain (e.g. example.org) " -r domain
@@ -65,7 +65,7 @@ function valid_ip()
 
 function readCaddyExtensions()
 {
-  if [[ $TRAVIS == true ]]; then
+  if [[ $TRAVIS_CI == 1 ]]; then
     caddy_extensions="git"
   else
     read -e -p "Enter the Caddy extensions you want (e.g. git,upload) " -r caddy_extensions
@@ -86,7 +86,7 @@ function readCaddyExtensions()
 
 function readWordPress()
 {
-  if [[ $TRAVIS == true ]]; then
+  if [[ $TRAVIS_CI == 1 ]]; then
     wordpress=0
   else
     read -p "Install WordPress? (Y/N)" -n 1 -r
@@ -104,7 +104,7 @@ function readWordPress()
 
 function readShopware()
 {
-  if [[ $TRAVIS == true ]]; then
+  if [[ $TRAVIS_CI == 1 ]]; then
     shopware=0
   else
     if [ "$wordpress" = 1 ]; then
@@ -126,7 +126,7 @@ function readShopware()
 
 function readPhpMyAdmin()
 {
-  if [[ $TRAVIS == true ]]; then
+  if [[ $TRAVIS_CI == 1 ]]; then
     phpmyadmin=0
   else
     read -p "Install phpMyAdmin? (Y/N)" -n 1 -r
@@ -144,7 +144,7 @@ function readPhpMyAdmin()
 
 function readStartSetup()
 {
-  if [[ $TRAVIS == true ]]; then
+  if [[ $TRAVIS_CI == 1 ]]; then
     sleep 0
   else
     read -p "Continue with setup? (Y/N)" -n 1 -r
@@ -164,7 +164,7 @@ function readStartSetup()
 function prepare()
 {
   checkLogfile
-  if [[ $TRAVIS == true ]]; then
+  if [[ $TRAVIS_CI == 1 ]]; then
     killall update-manager-core
   else
     sudo dpkg-reconfigure tzdata
@@ -188,7 +188,7 @@ function prepare()
 
 function check_root()
 {
-  if [[ $TRAVIS == true ]]; then
+  if [[ $TRAVIS_CI == 1 ]]; then
     sleep 0
   else
     echo "Checking if logged in user is root."
@@ -324,7 +324,7 @@ EOT
 function install_php()
 {
   echo "Adding PHP7 repository"
-  if [[ $TRAVIS == true ]]; then
+  if [[ $TRAVIS_CI == 1 ]]; then
     LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php -y
   else
     sudo add-apt-repository ppa:ondrej/php -y
@@ -376,7 +376,7 @@ StartLimitInterval=600
 [Install]
 WantedBy=multi-user.target
 EOT
-  if [[ $TRAVIS == true ]]; then
+  if [[ $TRAVIS_CI == 1 ]]; then
     sleep 0
   else
     sudo systemctl enable caddy
@@ -572,7 +572,7 @@ MariaDB root password:        ${MARIADB_ROOT_PASS}
 Please keep this information somewhere safe (preferably not here!)
 EOT
   fi
-  if [[ $TRAVIS == true ]]; then
+  if [[ $TRAVIS_CI == 1 ]]; then
     sleep 0
   else
     service caddy start
