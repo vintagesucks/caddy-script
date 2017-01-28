@@ -20,8 +20,6 @@ function checkLogfile()
 function readEmail()
 {
   if [[ $TRAVIS == true ]]; then
-    echo "Travis"
-    exit 0
     email="travis@example.org"
   else
     read -e -p "Enter an email address (e.g. admin@example.org) " -r email
