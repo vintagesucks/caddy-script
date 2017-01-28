@@ -500,19 +500,9 @@ EOT
 
 function finish()
 {
-  echo "Granting permissions for"
-  if [ "$wordpress" = 1 ]; then
-    sudo chown -R www-data:www-data /home/caddy/
-    sudo chown -R caddy /home/caddy/
-  elif [ "$shopware" = 1 ]; then
-    sudo chown -R www-data:www-data /home/caddy/
-    sudo chown -R caddy /home/caddy/
-    sudo chown -R caddy /home/caddy/"${domain}"/www
-    sudo chown -R www-data:www-data /home/caddy/"${domain}"/www/var/cache
-  else
-    sudo chown -R www-data:www-data /home/caddy/
-    sudo chown -R caddy /home/caddy/
-  fi
+  echo "Setting proper directory permissions"
+  sudo chown -R caddy /home/caddy/
+  sudo chown -R www-data:www-data /home/caddy/"${domain}"/www/
   echo "Creating setup logfile"
   if [ "$wordpress" = 1 ]; then
     sudo -u caddy cat <<EOT >> /home/caddy/caddy-script.log
