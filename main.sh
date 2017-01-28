@@ -332,7 +332,7 @@ function install_php()
   echo "Check Packages for updates"
   sudo apt-get update
   echo "Installing PHP7 and extensions"
-  sudo apt-get install php7.0-fpm php7.0-mysql php7.0-curl php7.0-intl php7.0-mcrypt php7.0-mbstring php7.0-soap php7.0-xml -y
+  sudo apt-get install php7.0-fpm php7.0-mysql php7.0-curl php7.0-intl php7.0-mcrypt php7.0-mbstring php7.0-soap php7.0-xml php7.0-zip -y
   echo "Configuring PHP Settings for Caddy"
   OLDPHPCONF="listen \= \/run\/php\/php7\.0\-fpm\.sock"
   NEWPHPCONF="listen \= 127\.0\.0\.1\:9000"
@@ -465,6 +465,31 @@ function install_shopware()
     echo "Getting sw.phar"
     curl -o /usr/local/bin/sw http://shopwarelabs.github.io/sw-cli-tools/sw.phar
     chmod +x /usr/local/bin/sw
+
+    echo "Installing Shopware specific PHP extensions"
+    apt-get install php7.0-gd -y
+    wget http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz
+    tar xvfz ioncube_loaders_lin_x86-64.tar.gz
+    sudo cp ioncube/ioncube_loader_lin_7.0.so /usr/lib/php/20151012/
+    sudo rm ioncube_loaders_lin_x86-64.tar.gz
+    sudo rm -rf ioncube_loaders_lin_x86-64
+
+    echo "Making Shopware specific php.ini changes"
+    sudo cat <<EOT >> /etc/php/7.0/fpm/php.ini
+zend_extension = "/usr/lib/php/20151012/ioncube_loader_lin_7.0.so"
+EOT
+    OLDMEMORYLIMIT="memory_limit \= 128M"
+    NEWMEMORYLIMIT="memory_limit \= 256M"
+    sudo sed -i "s/${OLDMEMORYLIMIT}/${NEWMEMORYLIMIT}/g" /etc/php/7.0/fpm/php.ini
+    OLDMAXFILESIZE="upload_max_filesize \= 2M"
+    NEWMAXFILESIZE="upload_max_filesize \= 6M"
+    sudo sed -i "s/${OLDMEMORYLIMIT}/${NEWMEMORYLIMIT}/g" /etc/php/7.0/fpm/php.ini
+
+    echo "Installing Shopware specific packages"
+    apt-get install libfreetype6 -y
+
+    echo "Restarting PHP"
+    sudo service php7.0-fpm restart
 
     echo "Installing Shopware via Shopware CLI Tools"
     sw install:release --release=5.2.15 --install-dir=/home/caddy/"${domain}"/www --db-user=shopware --db-password="${swdbpass}" --admin-username=admin --admin-password="${swadminpass}" --db-name=shopware --shop-path=CS_SW_PATH_PLACEHOLDER --shop-host="${domain}"
