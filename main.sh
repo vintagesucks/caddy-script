@@ -164,11 +164,7 @@ function readStartSetup()
 function prepare()
 {
   checkLogfile
-  if [[ TRAVIS==true ]]; then
-    sleep 0
-  else
-    sudo dpkg-reconfigure tzdata
-  fi
+  sudo dpkg-reconfigure tzdata
   readEmail
   readDomain
   readCaddyExtensions
