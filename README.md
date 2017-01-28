@@ -1,6 +1,8 @@
-# :whale: caddy-script [![Code Climate](https://codeclimate.com/github/vintagesucks/caddy-script/badges/gpa.svg)](https://codeclimate.com/github/vintagesucks/caddy-script) [![Issue Count](https://img.shields.io/codeclimate/issues/github/vintagesucks/caddy-script.svg)](https://codeclimate.com/github/vintagesucks/caddy-script/issues) [![Travis CI](https://api.travis-ci.org/vintagesucks/caddy-script.svg?branch=master)](https://travis-ci.org/vintagesucks/caddy-script)  
-
+## :whale: caddy-script  
 Caddy installation script for DigitalOcean (fully automated)
+
+[![license](https://img.shields.io/github/license/vintagesucks/caddy-script.svg)](https://github.com/vintagesucks/caddy-script/blob/master/LICENSE.md) [![GitHub contributors](https://img.shields.io/github/contributors/vintagesucks/caddy-script.svg)](https://github.com/vintagesucks/caddy-script/graphs/contributors) [![GitHub stars](https://img.shields.io/github/stars/vintagesucks/caddy-script.svg?style=flat&label=Stars)](https://github.com/vintagesucks/caddy-script/stargazers)  
+[![Code Climate](https://codeclimate.com/github/vintagesucks/caddy-script/badges/gpa.svg)](https://codeclimate.com/github/vintagesucks/caddy-script) [![Issue Count](https://img.shields.io/codeclimate/issues/github/vintagesucks/caddy-script.svg)](https://codeclimate.com/github/vintagesucks/caddy-script/issues) [![Travis CI](https://api.travis-ci.org/vintagesucks/caddy-script.svg?branch=master)](https://travis-ci.org/vintagesucks/caddy-script)  
 
 #### Features
 - [x] Install Caddy
