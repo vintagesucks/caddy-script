@@ -164,7 +164,11 @@ function readStartSetup()
 function prepare()
 {
   checkLogfile
-  sudo dpkg-reconfigure tzdata
+  if [[ $TRAVIS == true ]]; then
+    killall update-manager-core
+  else
+    sudo dpkg-reconfigure tzdata
+  fi
   readEmail
   readDomain
   readCaddyExtensions
