@@ -13,7 +13,7 @@ function checkLogfile()
     clear
     echo " >> You already installed Caddy with caddy-script!"
     echo " >> Please view /home/caddy/caddy-script.log for your details."
-    exit
+    exit 0
   fi
 }
 
@@ -153,7 +153,7 @@ function readStartSetup()
       sleep 0
     elif [[ "$REPLY" =~ ^[Nn]$ ]]; then
       echo " >> Setup cancelled."
-      exit
+      exit 1
     else
       echo " >> Please enter either Y or N."
       readStartSetup
@@ -191,7 +191,7 @@ function check_root()
     _uid="$(id -u)"
     if [ "$_uid" != 0 ]; then
       echo " >>> You have to run caddy-script as root."
-      exit
+      exit 1
     else
       echo "User is root."
     fi
@@ -203,7 +203,7 @@ function create_user()
   echo "Checking if user caddy already exists."
   if [ "$(getent passwd caddy)" ] ; then
     echo " >>> User caddy already exists. Please start with a clean system."
-    exit
+    exit 1
   else
     echo "Adding user caddy."
     adduser caddy --disabled-password --gecos GECOS
