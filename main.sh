@@ -387,7 +387,7 @@ EOT
 
 function install_mariadb()
 {
-  MARIADB_ROOT_PASS=`dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev | tr -dc 'a-zA-Z0-9'`
+  MARIADB_ROOT_PASS=$(dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev | tr -dc 'a-zA-Z0-9')
   sudo apt-get install mariadb-server -y
   apt install expect -y
 	SECURE_MYSQL=$(expect -c "
@@ -420,13 +420,13 @@ function install_wordpress()
 {
   if [[ "$wordpress" = 1 ]]; then
     echo "Installing WordPress"
-    wpdbpass=`dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev | tr -dc 'a-zA-Z0-9'`
+    wpdbpass=$(dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev | tr -dc 'a-zA-Z0-9')
     mysql -uroot -e "create database wordpress;"
     mysql -uroot -e "grant usage on *.* to wordpress@localhost identified by '${wpdbpass}';"
     mysql -uroot -e "grant all privileges on wordpress.* to wordpress@localhost;"
     mysql -uroot -e "FLUSH PRIVILEGES;"
 
-    wpadminpass=`dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev | tr -dc 'a-zA-Z0-9'`
+    wpadminpass=$(dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev | tr -dc 'a-zA-Z0-9')
 
     # Protocol
     if valid_ip "${domain}"; then
@@ -451,14 +451,14 @@ function install_shopware()
 {
   if [[ "$shopware" = 1 ]]; then
     echo "Installing Shopware"
-    swdbpass=`dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev | tr -dc 'a-zA-Z0-9'`
+    swdbpass=$(dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev | tr -dc 'a-zA-Z0-9')
 
     mysql -uroot -e "create database shopware;"
     mysql -uroot -e "grant usage on *.* to shopware@localhost identified by '${swdbpass}';"
     mysql -uroot -e "grant all privileges on shopware.* to shopware@localhost;"
     mysql -uroot -e "FLUSH PRIVILEGES;"
 
-    swadminpass=`dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev | tr -dc 'a-zA-Z0-9'`
+    swadminpass=$(dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev | tr -dc 'a-zA-Z0-9')
 
     echo "Installing required packages"
     apt install openjdk-9-jre-headless ant unzip -y
