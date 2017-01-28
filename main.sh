@@ -35,12 +35,20 @@ function readEmail()
 function readDomain()
 {
   if [[ $TRAVIS_CI == 1 ]]; then
+    protocol="http://"
     domain="127.0.0.1"
   else
     read -e -p "Enter a domain (e.g. example.org) " -r domain
     if [[ "${#domain}" -lt 1 ]]; then
       echo " >> Please enter a valid domain!"
       readDomain
+    fi
+
+    # Protocol
+    if valid_ip "${domain}"; then
+      protocol="http://"
+    else
+      protocol="https://"
     fi
   fi
 }
@@ -427,13 +435,6 @@ function install_wordpress()
     mysql -uroot -e "FLUSH PRIVILEGES;"
 
     wpadminpass=$(dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev | tr -dc 'a-zA-Z0-9')
-
-    # Protocol
-    if valid_ip "${domain}"; then
-      protocol="http://"
-    else
-      protocol="https://"
-    fi
 
     # Download and install wp-cli
     curl -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
