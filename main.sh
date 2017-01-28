@@ -317,6 +317,10 @@ EOT
   # Add rewrites for Shopware (if selected)
   if [ "$shopware" = 1 ]; then
     sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
+  rewrite /recovery/update/ {
+    if {path} not_has assets
+    to /recovery/update/index.php
+  }
   rewrite {
     to {path} {path}/ /shopware.php?{query}
   }
