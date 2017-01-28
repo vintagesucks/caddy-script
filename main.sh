@@ -165,7 +165,7 @@ function prepare()
 {
   checkLogfile
   if [[ $TRAVIS_CI == 1 ]]; then
-    killall update-manager-core
+    sleep 0
   else
     sudo dpkg-reconfigure tzdata
   fi
