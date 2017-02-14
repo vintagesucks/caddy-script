@@ -1,5 +1,5 @@
 ## :whale: caddy-script  
-Caddy installation script for DigitalOcean (fully automated)
+Caddy installation script (automated)
 
 [![license](https://img.shields.io/github/license/vintagesucks/caddy-script.svg)](https://github.com/vintagesucks/caddy-script/blob/master/LICENSE) [![GitHub contributors](https://img.shields.io/github/contributors/vintagesucks/caddy-script.svg)](https://github.com/vintagesucks/caddy-script/graphs/contributors) [![GitHub stars](https://img.shields.io/github/stars/vintagesucks/caddy-script.svg?style=flat&label=stars)](https://github.com/vintagesucks/caddy-script/stargazers)  
 [![Support](https://img.shields.io/badge/Support the author-DigitalOcean*-blue.svg)](https://m.do.co/c/3c23791febd7) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a0b0746d7a9f4a9db9fe7ae0d1fd775b)](https://www.codacy.com/app/vintagesucks/caddy-script?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=vintagesucks/caddy-script&amp;utm_campaign=Badge_Grade)  
@@ -15,9 +15,10 @@ Caddy installation script for DigitalOcean (fully automated)
 - [x] Install Shopware [optional]
 - [x] Install phpMyAdmin [optional]  
 
-#### Requirements
+#### Tested on
 
-- Clean Ubuntu 16.04. Droplet on [DigitalOcean](https://m.do.co/c/3c23791febd7)*
+- Ubuntu 16.04.1 x64 LTS (Desktop)
+- Ubuntu 16.04.1 x64 Droplet on [DigitalOcean](https://m.do.co/c/3c23791febd7)*
 
 #### Usage
 
