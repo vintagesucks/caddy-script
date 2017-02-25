@@ -245,8 +245,11 @@ function install_caddy()
 
 function create_caddyfile()
 {
-  # Redirect www. if domain is not an ip address
+  # Redirect www. if domain is not an ip address or a subdomain
+  dots="${domain//[^.]}"
   if valid_ip "${domain}"; then
+    sleep 0
+  elif [ "${#dots}" != 1 ]; then
     sleep 0
   else
     sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
