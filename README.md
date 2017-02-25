@@ -18,7 +18,7 @@ Caddy installation script (automated)
 #### Tested on
 
 - Ubuntu 16.04.1 x64 LTS (Desktop)
-- Ubuntu 16.04.1 x64 Droplet on [DigitalOcean](https://m.do.co/c/3c23791febd7)*
+- Ubuntu 16.04.2 x64 Droplet on [DigitalOcean](https://m.do.co/c/3c23791febd7)*
 
 #### Usage
 
