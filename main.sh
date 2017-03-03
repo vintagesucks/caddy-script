@@ -339,11 +339,8 @@ EOT
 function install_php()
 {
   echo "Adding PHP7 repository"
-  if [[ $TRAVIS_CI == 1 ]]; then
-    LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php -y
-  else
-    sudo add-apt-repository ppa:ondrej/php -y
-  fi
+  apt-get install -y language-pack-en-base
+  LC_ALL=en_US.UTF-8 add-apt-repository ppa:ondrej/php -y
   echo "Check Packages for updates"
   sudo apt-get update
   echo "Installing PHP7 and extensions"
