@@ -357,6 +357,8 @@ function install_phpmyadmin()
 {
   if [[ ${phpmyadmin} == 1 ]]; then
     mkdir /home/caddy/"${domain}"/www/phpmyadmin
+    echo "Installing Git"
+    apt install git -y
     echo "Installing phpMyAdmin via Git";
     cd /home/caddy/"${domain}"/www/phpmyadmin/
     git clone https://github.com/phpmyadmin/phpmyadmin.git .
