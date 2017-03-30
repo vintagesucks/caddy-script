@@ -19,6 +19,7 @@ Caddy installation script (automated)
 
 - Ubuntu 16.04.1 x64 LTS (Desktop)
 - Ubuntu 16.04.2 x64 Droplet on [DigitalOcean](https://m.do.co/c/3c23791febd7)*
+- Ubuntu 16.04.2 x64 Linode on [Linode](https://www.linode.com/?r=d642007a0d1ab4e27e2ad163aa87e6f93b65088e)**
 
 #### Usage
 
@@ -38,4 +39,5 @@ You can read the [Caddy Documentation](https://caddyserver.com/docs) if you need
 
 ---
 
-\* Referral link to [https://digitalocean.com/](https://digitalocean.com/).
+&thinsp;&thinsp;\* Referral link to [https://digitalocean.com/](https://digitalocean.com/)   
+\*\* Referral link to [https://www.linode.com/](https://www.linode.com/)
