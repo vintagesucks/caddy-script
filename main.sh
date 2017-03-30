@@ -339,7 +339,7 @@ EOT
 function install_php()
 {
   echo "Adding PHP7 repository"
-  apt-get install -y language-pack-en-base
+  apt-get install -y language-pack-en-base software-properties-common
   LC_ALL=en_US.UTF-8 add-apt-repository ppa:ondrej/php -y
   echo "Check Packages for updates"
   sudo apt-get update
