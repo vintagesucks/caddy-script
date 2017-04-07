@@ -418,7 +418,7 @@ function install_mariadb()
   	expect \"Remove anonymous users? \[Y/n\]\"
   	send \"y\r\"
   	expect \"Disallow root login remotely? \[Y/n\]\"
-  	send \"n\r\"
+  	send \"y\r\"
   	expect \"Remove test database and access to it? \[Y/n\]\"
   	send \"y\r\"
   	expect \"Reload privilege tables now? \[Y/n\]\"
