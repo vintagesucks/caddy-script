@@ -344,7 +344,7 @@ function install_php()
   echo "Check Packages for updates"
   sudo apt-get update
   echo "Installing PHP7 and extensions"
-  sudo apt-get install php7.0-fpm php7.0-mysql php7.0-curl php7.0-intl php7.0-mcrypt php7.0-mbstring php7.0-soap php7.0-xml php7.0-zip -y
+  sudo apt-get install php7.0-fpm php7.0-mysql php7.0-curl php7.0-intl php7.0-mcrypt php7.0-mbstring php7.0-soap php7.0-xml php7.0-zip php-memcached memcached -y
   echo "Configuring PHP Settings for Caddy"
   OLDPHPCONF="listen \= \/run\/php\/php7\.0\-fpm\.sock"
   NEWPHPCONF="listen \= 127\.0\.0\.1\:9000"
