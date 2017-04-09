@@ -514,13 +514,16 @@ EOT
 function setup_unattended_upgrades()
 {
   echo "Setting up unattended_upgrades"
-  UU=$(dpkg-query -W --showformat='${Status}\n' unattended-upgrades|grep "install ok installed")
-  if [ "" == "$UU" ]; then
-    apt-get install unattended-upgrades update-notifier-common -y
+  apt-get install unattended-upgrades -y
+  UNC=$(dpkg-query -W --showformat='${Status}\n' update-notifier-common|grep "install ok installed")
+  if [ "" == "$UNC" ]; then
+    apt-get install update-notifier-common -y
     sudo cat <<EOT >> /etc/apt/apt.conf.d/20auto-upgrades
 APT::Periodic::Update-Package-Lists "1";
 APT::Periodic::Unattended-Upgrade "1";
 EOT
+  else
+    apt-get upgrade update-notifier-common -y
   fi
   OLD20AUCONF='APT::Periodic::Unattended-Upgrade "1";'
   NEW20AUCONF='APT::Periodic::Unattended-Upgrade "3";'
