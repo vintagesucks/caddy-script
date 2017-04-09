@@ -515,7 +515,9 @@ function setup_unattended_upgrades()
 {
   echo "Setting up unattended_upgrades"
   apt-get install unattended-upgrades -y
+  set +e
   UNC=$(dpkg-query -W --showformat='${Status}\n' update-notifier-common|grep "install ok installed")
+  set -e
   if [ "" == "$UNC" ]; then
     apt-get install update-notifier-common -y
     sudo cat <<EOT >> /etc/apt/apt.conf.d/20auto-upgrades
