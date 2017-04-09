@@ -380,7 +380,7 @@ function install_phpmyadmin()
 function install_caddy_service()
 {
   echo "Registering Caddy as a Service"
-  sudo cat <<EOT >> /etc/systemd/system/caddy.service
+  cat <<EOT >> /etc/systemd/system/caddy.service
 [Unit]
 Description=Caddy - The HTTP/2 web server with automatic HTTPS
 Documentation=https://caddyserver.com/docs
@@ -489,7 +489,7 @@ function install_shopware()
     sudo rm -rf ioncube_loaders_lin_x86-64
 
     echo "Making Shopware specific php.ini changes"
-    sudo cat <<EOT >> /etc/php/7.0/fpm/php.ini
+    cat <<EOT >> /etc/php/7.0/fpm/php.ini
 zend_extension = "/usr/lib/php/20151012/ioncube_loader_lin_7.0.so"
 EOT
     OLDMEMORYLIMIT="memory_limit \= 128M"
@@ -520,7 +520,7 @@ function setup_unattended_upgrades()
   set -e
   if [ "" == "$UNC" ]; then
     apt-get install update-notifier-common -y
-    sudo cat <<EOT >> /etc/apt/apt.conf.d/20auto-upgrades
+    cat <<EOT >> /etc/apt/apt.conf.d/20auto-upgrades
 APT::Periodic::Update-Package-Lists "1";
 APT::Periodic::Unattended-Upgrade "1";
 EOT
@@ -530,7 +530,7 @@ EOT
   OLD20AUCONF='APT::Periodic::Unattended-Upgrade "1";'
   NEW20AUCONF='APT::Periodic::Unattended-Upgrade "3";'
   sudo sed -i "s/${OLD20AUCONF}/${NEW20AUCONF}/g" /etc/apt/apt.conf.d/20auto-upgrades
-  sudo cat <<EOT >> /etc/apt/apt.conf.d/20auto-upgrades
+  cat <<EOT >> /etc/apt/apt.conf.d/20auto-upgrades
 APT::Periodic::Download-Upgradeable-Packages "1";
 APT::Periodic::AutocleanInterval "9";
 EOT
