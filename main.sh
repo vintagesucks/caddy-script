@@ -353,6 +353,14 @@ function install_php()
   sudo service php7.0-fpm restart
 }
 
+function install_mailutils()
+{
+  echo "Setting up mailutils"
+  debconf-set-selections <<< "postfix postfix/mailname string ${domain}"
+  debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Internet Site'"
+  apt-get install mailutils -y
+}
+
 function install_phpmyadmin()
 {
   if [[ ${phpmyadmin} == 1 ]]; then
@@ -570,6 +578,7 @@ check_root
 create_user
 install_caddy
 install_php
+install_mailutils
 install_phpmyadmin
 install_caddy_service
 install_mariadb
