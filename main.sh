@@ -512,6 +512,29 @@ EOT
   fi
 }
 
+function setup_unattended_upgrades()
+{
+  echo "Setting up unattended_upgrades"
+  UU=$(dpkg-query -W --showformat='${Status}\n' unattended-upgrades|grep "install ok installed")
+  if [ "" == "$UU" ]; then
+    apt-get install unattended-upgrades update-notifier-common -y
+    sudo cat <<EOT >> /etc/apt/apt.conf.d/20auto-upgrades
+APT::Periodic::Update-Package-Lists "1";
+APT::Periodic::Unattended-Upgrade "1";
+EOT
+  fi
+  OLD20AUCONF='APT::Periodic::Unattended-Upgrade "1";'
+  NEW20AUCONF='APT::Periodic::Unattended-Upgrade "3";'
+  sudo sed -i "s/${OLD20AUCONF}/${NEW20AUCONF}/g" /etc/apt/apt.conf.d/20auto-upgrades
+  sudo cat <<EOT >> /etc/apt/apt.conf.d/20auto-upgrades
+APT::Periodic::Download-Upgradeable-Packages "1";
+APT::Periodic::AutocleanInterval "9";
+EOT
+  OLD50UUCONF='\/\/Unattended-Upgrade::Mail "root";'
+  NEW50UUCONF='Unattended-Upgrade::Mail "${email}";'
+  sudo sed -i "s/${OLD50UUCONF}/${NEW50UUCONF}/g" /etc/apt/apt.conf.d/50unattended-upgrades
+}
+
 function finish()
 {
   echo "Setting proper directory permissions"
@@ -584,4 +607,5 @@ install_caddy_service
 install_mariadb
 install_wordpress
 install_shopware
+setup_unattended_upgrades
 finish
