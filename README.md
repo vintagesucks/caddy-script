@@ -11,6 +11,7 @@ Caddy installation script (automated)
 - [x] Install MariaDB
 - [x] Register Caddy as a service with systemd
 - [x] Configure Caddyfile with gzip, fast-cgi, logs & redirects
+- [x] Configure automatic security updates with email notifications
 - [x] Install WordPress [optional]
 - [x] Install Shopware [optional]
 - [x] Install phpMyAdmin [optional]  

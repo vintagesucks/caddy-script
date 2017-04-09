@@ -353,6 +353,14 @@ function install_php()
   sudo service php7.0-fpm restart
 }
 
+function install_mailutils()
+{
+  echo "Setting up mailutils"
+  debconf-set-selections <<< "postfix postfix/mailname string ${domain}"
+  debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Internet Site'"
+  apt-get install mailutils -y
+}
+
 function install_phpmyadmin()
 {
   if [[ ${phpmyadmin} == 1 ]]; then
@@ -372,7 +380,7 @@ function install_phpmyadmin()
 function install_caddy_service()
 {
   echo "Registering Caddy as a Service"
-  sudo cat <<EOT >> /etc/systemd/system/caddy.service
+  cat <<EOT >> /etc/systemd/system/caddy.service
 [Unit]
 Description=Caddy - The HTTP/2 web server with automatic HTTPS
 Documentation=https://caddyserver.com/docs
@@ -427,7 +435,6 @@ function install_mariadb()
   	")
   echo "${SECURE_MYSQL}"
   apt remove expect -y
-  apt autoremove -y
 }
 
 function install_wordpress()
@@ -482,7 +489,7 @@ function install_shopware()
     sudo rm -rf ioncube_loaders_lin_x86-64
 
     echo "Making Shopware specific php.ini changes"
-    sudo cat <<EOT >> /etc/php/7.0/fpm/php.ini
+    cat <<EOT >> /etc/php/7.0/fpm/php.ini
 zend_extension = "/usr/lib/php/20151012/ioncube_loader_lin_7.0.so"
 EOT
     OLDMEMORYLIMIT="memory_limit \= 128M"
@@ -504,8 +511,36 @@ EOT
   fi
 }
 
+function setup_unattended_upgrades()
+{
+  echo "Setting up unattended_upgrades"
+  apt-get install unattended-upgrades -y
+  set +e
+  UNC=$(dpkg-query -W --showformat='${Status}\n' update-notifier-common|grep "install ok installed")
+  set -e
+  if [ "" == "$UNC" ]; then
+    apt-get install update-notifier-common -y
+    cat <<EOT >> /etc/apt/apt.conf.d/20auto-upgrades
+APT::Periodic::Update-Package-Lists "1";
+APT::Periodic::Unattended-Upgrade "1";
+EOT
+  fi
+  OLD20AUCONF='APT::Periodic::Unattended-Upgrade "1";'
+  NEW20AUCONF='APT::Periodic::Unattended-Upgrade "3";'
+  sudo sed -i "s/${OLD20AUCONF}/${NEW20AUCONF}/g" /etc/apt/apt.conf.d/20auto-upgrades
+  cat <<EOT >> /etc/apt/apt.conf.d/20auto-upgrades
+APT::Periodic::Download-Upgradeable-Packages "1";
+APT::Periodic::AutocleanInterval "9";
+EOT
+  OLD50UUCONF='\/\/Unattended-Upgrade::Mail "root";'
+  NEW50UUCONF="Unattended-Upgrade::Mail \"${email}\";"
+  sudo sed -i "s/${OLD50UUCONF}/${NEW50UUCONF}/g" /etc/apt/apt.conf.d/50unattended-upgrades
+}
+
 function finish()
 {
+  echo "Remove packages that are no more needed."
+  apt autoremove -y
   echo "Setting proper directory permissions"
   sudo chown -R caddy /home/caddy/
   sudo chown -R www-data:www-data /home/caddy/"${domain}"/www/
@@ -570,9 +605,11 @@ check_root
 create_user
 install_caddy
 install_php
+install_mailutils
 install_phpmyadmin
 install_caddy_service
 install_mariadb
 install_wordpress
 install_shopware
+setup_unattended_upgrades
 finish
