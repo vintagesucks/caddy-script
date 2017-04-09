@@ -535,7 +535,7 @@ APT::Periodic::Download-Upgradeable-Packages "1";
 APT::Periodic::AutocleanInterval "9";
 EOT
   OLD50UUCONF='\/\/Unattended-Upgrade::Mail "root";'
-  NEW50UUCONF='Unattended-Upgrade::Mail "${email}";'
+  NEW50UUCONF="Unattended-Upgrade::Mail \"${email}\";"
   sudo sed -i "s/${OLD50UUCONF}/${NEW50UUCONF}/g" /etc/apt/apt.conf.d/50unattended-upgrades
 }
 
