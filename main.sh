@@ -435,7 +435,6 @@ function install_mariadb()
   	")
   echo "${SECURE_MYSQL}"
   apt remove expect -y
-  apt autoremove -y
 }
 
 function install_wordpress()
@@ -537,6 +536,8 @@ EOT
 
 function finish()
 {
+  echo "Remove packages that are no more needed."
+  apt autoremove -y
   echo "Setting proper directory permissions"
   sudo chown -R caddy /home/caddy/
   sudo chown -R www-data:www-data /home/caddy/"${domain}"/www/
