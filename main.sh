@@ -524,8 +524,6 @@ function setup_unattended_upgrades()
 APT::Periodic::Update-Package-Lists "1";
 APT::Periodic::Unattended-Upgrade "1";
 EOT
-  else
-    apt-get upgrade update-notifier-common -y
   fi
   OLD20AUCONF='APT::Periodic::Unattended-Upgrade "1";'
   NEW20AUCONF='APT::Periodic::Unattended-Upgrade "3";'
