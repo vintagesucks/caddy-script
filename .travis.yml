@@ -5,5 +5,5 @@ services:
   - docker
 
 before_install:
-  - docker build -t vintagesucks/caddy-script .
-  - docker run vintagesucks/caddy-script /bin/bash -c "TRAVIS_CI=1; export TRAVIS_CI; apt-get update; apt-get install -y curl sudo software-properties-common; bash <(curl -s https://raw.githubusercontent.com/vintagesucks/caddy-script/master/main.sh)"
+  - docker build -t 1604 -f dockerfiles/16.04/Dockerfile .
+  - docker run 1604 /bin/bash -c "TRAVIS_CI=1; export TRAVIS_CI; apt-get update; apt-get install -y curl sudo software-properties-common; ./main.sh"
