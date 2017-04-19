@@ -11,4 +11,4 @@ env:
 
 before_install:
   - docker build -t caddy-script -f $DOCKERFILE .
-  - docker run caddy-script /bin/bash -c "export TRAVIS_CI=1; apt-get update; apt-get install -y sudo; bash /tmp/main.sh"
+  - docker run caddy-script /bin/bash -c "export TRAVIS_CI=1; apt-get update; apt-get install -y sudo software-properties-common; bash /tmp/main.sh"
