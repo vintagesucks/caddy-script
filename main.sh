@@ -231,7 +231,7 @@ function install_caddy()
   echo "Installing Caddy."
   sudo -u caddy curl -fsSL https://getcaddy.com | bash -s "${caddy_extensions}"
   echo "Setting permissions for Caddy."
-  sudo apt-get install libpcap-dev -y
+  sudo apt-get install libcap2-bin -y
   sudo setcap cap_net_bind_service=+ep /usr/local/bin/caddy
   echo "Creating Caddyfile."
   create_caddyfile
