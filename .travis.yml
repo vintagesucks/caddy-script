@@ -6,4 +6,4 @@ services:
 
 before_install:
   - docker build -t 1604 -f Docker/1604/Dockerfile .
-  - docker run 1604 /bin/bash -c "TRAVIS_CI=1; export TRAVIS_CI; apt-get update; apt-get install -y curl sudo software-properties-common; bash /tmp/main.sh"
+  - docker run 1604 /bin/bash -c "export TRAVIS_CI=1; apt-get update; apt-get install -y curl sudo software-properties-common; bash /tmp/main.sh"
