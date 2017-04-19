@@ -4,6 +4,11 @@ sudo: required
 services:
   - docker
 
+env:
+  - DOCKERFILE="Docker/1604/Dockerfile"
+  - DOCKERFILE="Docker/1610/Dockerfile"
+  - DOCKERFILE="Docker/1704/Dockerfile"
+
 before_install:
-  - docker build -t vintagesucks/caddy-script .
-  - docker run vintagesucks/caddy-script /bin/bash -c "TRAVIS_CI=1; export TRAVIS_CI; apt-get update; apt-get install -y curl sudo software-properties-common; bash <(curl -s https://raw.githubusercontent.com/vintagesucks/caddy-script/master/main.sh)"
+  - docker build -t caddy-script -f $DOCKERFILE .
+  - docker run caddy-script /bin/bash -c "export TRAVIS_CI=1; apt-get update; apt-get install -y curl sudo software-properties-common; bash /tmp/main.sh"
