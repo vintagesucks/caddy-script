@@ -6,9 +6,8 @@ services:
 
 env:
   - DOCKERFILE="Docker/1604/Dockerfile"
-
-before_install:
-    - docker build -f $DOCKERFILE .
+  - DOCKERFILE="Docker/1610/Dockerfile"
+  - DOCKERFILE="Docker/1704/Dockerfile"
 
 before_install:
   - docker build -t caddy-script -f $DOCKERFILE .
