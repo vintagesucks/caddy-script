@@ -17,33 +17,27 @@ Caddy installation script (automated)
 - [x] Install phpMyAdmin [optional]  
 
 #### Tested on
-
 - Ubuntu 16.04
 - Ubuntu 16.10
 - Ubuntu 17.04
 
 #### Usage
-
 `bash <(curl -s https://raw.githubusercontent.com/vintagesucks/caddy-script/master/main.sh)`
 
 You'll be asked for your timezone, an email, the domain/ip to use and additional features you want.
 
 #### Help
-
 You can read the [Caddy Documentation](https://caddyserver.com/docs) if you need more information about Caddy's features and extensions.
 
 #### Acknowledgements
-
 - [getcaddy.com](https://getcaddy.com/)
 - [caddy.service](https://denbeke.be/blog/servers/running-caddy-server-as-a-service-with-systemd/) file by Mathias Beke  
 - [Validating an IP Address in a Bash Script](https://www.linuxjournal.com/content/validating-ip-address-bash-script) by Mitch Frazier
 
 #### Support me
-
 You can support me by signing up for an account at [DigitalOcean](https://m.do.co/c/3c23791febd7)\* or [Linode](https://www.linode.com/?r=d642007a0d1ab4e27e2ad163aa87e6f93b65088e).\*\*
 
 ---
-
 
 &thinsp;&thinsp;\* Referral link to [https://digitalocean.com/](https://digitalocean.com/)   
 \*\* Referral link to [https://www.linode.com/](https://www.linode.com/)
