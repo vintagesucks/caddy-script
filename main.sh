@@ -74,9 +74,9 @@ function valid_ip()
 function readCaddyExtensions()
 {
   if [[ $TRAVIS_CI == 1 ]]; then
-    caddy_extensions="git"
+    caddy_extensions="http.git"
   else
-    read -e -p "Enter the Caddy extensions you want (e.g. git,upload) " -r caddy_extensions
+    read -e -p "Enter the Caddy extensions you want (e.g. http.git,http.upload) " -r caddy_extensions
     if [[ "${#caddy_extensions}" = 0 ]]; then
       read -p "Are you sure you want to continue without additional Caddy features? (Y/N)" -n 1 -r
       echo
