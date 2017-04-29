@@ -221,7 +221,7 @@ function create_user()
     adduser caddy --disabled-password --gecos GECOS
     adduser caddy www-data
     echo "Adding user caddy to sudoers."
-    echo 'caddy ALL=(ALL) ALL' >> /etc/sudoers
+    echo 'caddy ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
     echo "Successfully set up user caddy and needed permissions."
   fi
 }
