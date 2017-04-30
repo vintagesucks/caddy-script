@@ -295,20 +295,8 @@ EOT
   # Add basic configuration
   sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
   root /home/caddy/${domain}/www
-  log $domain/log/access.log {
-    rotate {
-      size 50
-      age  30
-      keep 10
-    }
-  }
-  errors {
-    log ${domain}/log/error.log {
-      size 50
-      age  30
-      keep 10
-    }
-  }
+  log ${domain}/log/access.log
+  errors ${domain}/log/error.log
   gzip
 EOT
 
