@@ -150,6 +150,24 @@ function readPhpMyAdmin()
   fi
 }
 
+function readUnattendedUpgrades()
+{
+  if [[ $TRAVIS_CI == 1 ]]; then
+    unattendedupgrades=1
+  else
+    read -p "Configure unattended-upgrades? (Y/N)" -n 1 -r
+    echo
+    if [[ "$REPLY" =~ ^[Yy]$ ]]; then
+      unattendedupgrades=1
+    elif [[ "$REPLY" =~ ^[Nn]$ ]]; then
+      unattendedupgrades=0
+    else
+      echo " >> Please enter either Y or N."
+      readUnattendedUpgrades
+    fi
+  fi
+}
+
 function readStartSetup()
 {
   if [[ $TRAVIS_CI == 1 ]]; then
@@ -183,13 +201,15 @@ function prepare()
   readWordPress
   readShopware
   readPhpMyAdmin
+  readUnattendedUpgrades
   echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
-  echo "Caddy Features: ${caddy_extensions}"
-  echo "        Domain: ${domain}"
-  echo "         Email: ${email}"
-  echo "     WordPress: ${wordpress}"
-  echo "      Shopware: ${shopware}"
-  echo "    phpMyAdmin: ${phpmyadmin}"
+  echo "     Caddy Features: ${caddy_extensions}"
+  echo "             Domain: ${domain}"
+  echo "              Email: ${email}"
+  echo "          WordPress: ${wordpress}"
+  echo "           Shopware: ${shopware}"
+  echo "         phpMyAdmin: ${phpmyadmin}"
+  echo "unattended-upgrades: ${unattendedupgrades}"
   echo ""
   readStartSetup
 }
@@ -356,10 +376,12 @@ function install_php()
 
 function install_mailutils()
 {
-  echo "Setting up mailutils"
-  debconf-set-selections <<< "postfix postfix/mailname string ${domain}"
-  debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Internet Site'"
-  apt-get install mailutils -y
+  if [[ ${unattendedupgrades} == 1 ]]; then
+    echo "Setting up mailutils"
+    debconf-set-selections <<< "postfix postfix/mailname string ${domain}"
+    debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Internet Site'"
+    apt-get install mailutils -y
+  fi
 }
 
 function install_phpmyadmin()
@@ -514,28 +536,30 @@ EOT
 
 function setup_unattended_upgrades()
 {
-  echo "Setting up unattended_upgrades"
-  apt-get install unattended-upgrades -y
-  set +e
-  UNC=$(dpkg-query -W --showformat='${Status}\n' update-notifier-common|grep "install ok installed")
-  set -e
-  if [ "" == "$UNC" ]; then
-    apt-get install update-notifier-common -y
-    cat <<EOT >> /etc/apt/apt.conf.d/20auto-upgrades
+  if [[ ${unattendedupgrades} == 1 ]]; then
+    echo "Setting up unattended_upgrades"
+    apt-get install unattended-upgrades -y
+    set +e
+    UNC=$(dpkg-query -W --showformat='${Status}\n' update-notifier-common|grep "install ok installed")
+    set -e
+    if [ "" == "$UNC" ]; then
+      apt-get install update-notifier-common -y
+      cat <<EOT >> /etc/apt/apt.conf.d/20auto-upgrades
 APT::Periodic::Update-Package-Lists "1";
 APT::Periodic::Unattended-Upgrade "1";
 EOT
-  fi
-  OLD20AUCONF='APT::Periodic::Unattended-Upgrade "1";'
-  NEW20AUCONF='APT::Periodic::Unattended-Upgrade "3";'
-  sudo sed -i "s/${OLD20AUCONF}/${NEW20AUCONF}/g" /etc/apt/apt.conf.d/20auto-upgrades
-  cat <<EOT >> /etc/apt/apt.conf.d/20auto-upgrades
+    fi
+    OLD20AUCONF='APT::Periodic::Unattended-Upgrade "1";'
+    NEW20AUCONF='APT::Periodic::Unattended-Upgrade "3";'
+    sudo sed -i "s/${OLD20AUCONF}/${NEW20AUCONF}/g" /etc/apt/apt.conf.d/20auto-upgrades
+    cat <<EOT >> /etc/apt/apt.conf.d/20auto-upgrades
 APT::Periodic::Download-Upgradeable-Packages "1";
 APT::Periodic::AutocleanInterval "9";
 EOT
-  OLD50UUCONF='\/\/Unattended-Upgrade::Mail "root";'
-  NEW50UUCONF="Unattended-Upgrade::Mail \"${email}\";"
-  sudo sed -i "s/${OLD50UUCONF}/${NEW50UUCONF}/g" /etc/apt/apt.conf.d/50unattended-upgrades
+    OLD50UUCONF='\/\/Unattended-Upgrade::Mail "root";'
+    NEW50UUCONF="Unattended-Upgrade::Mail \"${email}\";"
+    sudo sed -i "s/${OLD50UUCONF}/${NEW50UUCONF}/g" /etc/apt/apt.conf.d/50unattended-upgrades
+  fi
 }
 
 function finish()
