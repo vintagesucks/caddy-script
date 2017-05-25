@@ -239,7 +239,6 @@ function create_user()
   else
     echo "Adding user caddy."
     adduser caddy --disabled-password --gecos GECOS
-    adduser caddy www-data
     echo "Adding user caddy to sudoers."
     echo 'caddy ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
     echo "Successfully set up user caddy and needed permissions."
@@ -255,12 +254,14 @@ function install_caddy()
   sudo setcap cap_net_bind_service=+ep /usr/local/bin/caddy
   echo "Creating Caddyfile."
   create_caddyfile
+  echo "Setting up directorys"
+  runuser -l caddy -c "mkdir log"
+  runuser -l www-data -c "/var/www"
   echo "Setting up directorys for ${domain}"
-  runuser -l caddy -c "mkdir ${domain}"
-  runuser -l caddy -c "mkdir ${domain}/log"
-  runuser -l caddy -c "mkdir ${domain}/www"
+  runuser -l caddy -c "mkdir log/${domain}"
+  runuser -l www-data -c "/var/www/${domain}"
   if [ "$wordpress" = 0 ] && [ "$shopware" = 0 ]; then
-    runuser -l caddy -c "echo 'Hello World' > ${domain}/www/index.html"
+    runuser -l www-data -c "echo 'Hello World' > /var/www/${domain}/index.html"
   fi
 }
 
@@ -294,9 +295,9 @@ EOT
 
   # Add basic configuration
   sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
-  root /home/caddy/${domain}/www
-  log ${domain}/log/access.log
-  errors ${domain}/log/error.log
+  root /var/www/${domain}
+  log log/${domain}/access.log
+  errors log/${domain}/error.log
   gzip
 EOT
 
@@ -375,11 +376,11 @@ function install_mailutils()
 function install_phpmyadmin()
 {
   if [[ ${phpmyadmin} == 1 ]]; then
-    mkdir /home/caddy/"${domain}"/www/phpmyadmin
+    mkdir /var/www/"${domain}"/phpmyadmin
     echo "Installing Git"
     apt install git -y
     echo "Installing phpMyAdmin via Git";
-    cd /home/caddy/"${domain}"/www/phpmyadmin/
+    cd /var/www/"${domain}"/phpmyadmin/
     git clone https://github.com/phpmyadmin/phpmyadmin.git .
     git checkout STABLE
     echo "Installing Composer"
@@ -464,11 +465,11 @@ function install_wordpress()
     curl -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
     chmod +x /usr/local/bin/wp
     # Download latest WordPress version
-    runuser -l caddy -c "wp core download --path=/home/caddy/${domain}/www"
+    runuser -l caddy -c "wp core download --path=/var/www/${domain}"
     # create wp-config.php
-    runuser -l caddy -c "wp core config --path=/home/caddy/${domain}/www --dbname=wordpress --dbuser=wordpress --dbpass=${wpdbpass} --dbhost=localhost"
+    runuser -l caddy -c "wp core config --path=/var/www/${domain} --dbname=wordpress --dbuser=wordpress --dbpass=${wpdbpass} --dbhost=localhost"
     #install WordPress
-    runuser -l caddy -c "wp core install --path=/home/caddy/${domain}/www --url=${protocol}${domain} --title=${domain} --admin_user=admin --admin_password=${wpadminpass} --admin_email=${email} --skip-email"
+    runuser -l caddy -c "wp core install --path=/var/www/${domain} --url=${protocol}${domain} --title=${domain} --admin_user=admin --admin_password=${wpadminpass} --admin_email=${email} --skip-email"
   fi
 }
 
@@ -556,7 +557,7 @@ function finish()
   apt autoremove -y
   echo "Setting proper directory permissions"
   sudo chown -R caddy /home/caddy/
-  sudo chown -R www-data:www-data /home/caddy/"${domain}"/www/
+  sudo chown -R www-data:www-data /var/www/
   echo "Creating setup logfile"
   if [ "$wordpress" = 1 ]; then
     sudo -u caddy cat <<EOT >> /home/caddy/caddy-script.log
