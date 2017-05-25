@@ -256,12 +256,12 @@ function install_caddy()
   create_caddyfile
   echo "Setting up directorys"
   runuser -l caddy -c "mkdir log"
-  runuser -l www-data -c "/var/www"
+  /var/www
   echo "Setting up directorys for ${domain}"
   runuser -l caddy -c "mkdir log/${domain}"
-  runuser -l www-data -c "/var/www/${domain}"
+  /var/www/${domain}
   if [ "$wordpress" = 0 ] && [ "$shopware" = 0 ]; then
-    runuser -l www-data -c "echo 'Hello World' > /var/www/${domain}/index.html"
+    echo 'Hello World' > /var/www/${domain}/index.html
   fi
 }
 
