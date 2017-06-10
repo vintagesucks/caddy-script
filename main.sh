@@ -259,9 +259,9 @@ function install_caddy()
   mkdir /var/www
   echo "Setting up directories for ${domain}"
   runuser -l caddy -c "mkdir log/${domain}"
-  mkdir /var/www/${domain}
+  mkdir /var/www/"${domain}"
   if [ "$wordpress" = 0 ] && [ "$shopware" = 0 ]; then
-    echo 'Hello World' > /var/www/${domain}/index.html
+    echo 'Hello World' > /var/www/"${domain}"/index.html
   fi
 }
 
@@ -465,11 +465,11 @@ function install_wordpress()
     curl -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
     chmod +x /usr/local/bin/wp
     # Download latest WordPress version
-    wp core download --path=/var/www/${domain} --allow-root
+    wp core download --path=/var/www/"${domain}" --allow-root
     # create wp-config.php
-    wp core config --path=/var/www/${domain} --dbname=wordpress --dbuser=wordpress --dbpass=${wpdbpass} --dbhost=localhost --allow-root
+    wp core config --path=/var/www/"${domain}" --dbname=wordpress --dbuser=wordpress --dbpass="${wpdbpass}" --dbhost=localhost --allow-root
     #install WordPress
-    wp core install --path=/var/www/${domain} --url=${protocol}${domain} --title=${domain} --admin_user=admin --admin_password=${wpadminpass} --admin_email=${email} --skip-email --allow-root
+    wp core install --path=/var/www/"${domain}" --url="${protocol}""${domain}" --title="${domain}" --admin_user=admin --admin_password="${wpadminpass}" --admin_email="${email}" --skip-email --allow-root
   fi
 }
 
@@ -518,7 +518,7 @@ EOT
     sudo service php7.0-fpm restart
 
     echo "Installing Shopware via Shopware CLI Tools"
-    sw install:release --release=latest --install-dir=/var/www/${domain} --db-user=shopware --db-password="${swdbpass}" --admin-username=admin --admin-password="${swadminpass}" --db-name=shopware --shop-path=CS_SW_PATH_PLACEHOLDER --shop-host="${domain}"
+    sw install:release --release=latest --install-dir=/var/www/"${domain}" --db-user=shopware --db-password="${swdbpass}" --admin-username=admin --admin-password="${swadminpass}" --db-name=shopware --shop-path=CS_SW_PATH_PLACEHOLDER --shop-host="${domain}"
     mysql -uroot -e "UPDATE shopware.s_core_shops SET base_path = NULL WHERE s_core_shops.id = 1;"
   fi
 }
