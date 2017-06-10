@@ -254,10 +254,10 @@ function install_caddy()
   sudo setcap cap_net_bind_service=+ep /usr/local/bin/caddy
   echo "Creating Caddyfile."
   create_caddyfile
-  echo "Setting up directorys"
+  echo "Setting up directories"
   runuser -l caddy -c "mkdir log"
   mkdir /var/www
-  echo "Setting up directorys for ${domain}"
+  echo "Setting up directories for ${domain}"
   runuser -l caddy -c "mkdir log/${domain}"
   mkdir /var/www/${domain}
   if [ "$wordpress" = 0 ] && [ "$shopware" = 0 ]; then
