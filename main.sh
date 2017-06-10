@@ -465,11 +465,11 @@ function install_wordpress()
     curl -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
     chmod +x /usr/local/bin/wp
     # Download latest WordPress version
-    wp core download --path=/var/www/${domain}
+    wp core download --path=/var/www/${domain} --allow-root
     # create wp-config.php
-    wp core config --path=/var/www/${domain} --dbname=wordpress --dbuser=wordpress --dbpass=${wpdbpass} --dbhost=localhost
+    wp core config --path=/var/www/${domain} --dbname=wordpress --dbuser=wordpress --dbpass=${wpdbpass} --dbhost=localhost --allow-root
     #install WordPress
-    wp core install --path=/var/www/${domain} --url=${protocol}${domain} --title=${domain} --admin_user=admin --admin_password=${wpadminpass} --admin_email=${email} --skip-email
+    wp core install --path=/var/www/${domain} --url=${protocol}${domain} --title=${domain} --admin_user=admin --admin_password=${wpadminpass} --admin_email=${email} --skip-email --allow-root
   fi
 }
 
