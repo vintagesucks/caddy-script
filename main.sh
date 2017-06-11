@@ -384,8 +384,9 @@ function install_phpmyadmin()
     git clone https://github.com/phpmyadmin/phpmyadmin.git .
     git checkout STABLE
     echo "Installing Composer"
-    apt install composer -y
-    composer update --no-dev
+    curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
+    chown -R www-data /var/www/
+    sudo -u www-data composer update --no-dev
   fi
 }
 
