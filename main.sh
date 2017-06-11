@@ -383,6 +383,10 @@ function install_phpmyadmin()
     cd /var/www/"${domain}"/phpmyadmin/
     git clone https://github.com/phpmyadmin/phpmyadmin.git .
     git checkout STABLE
+    echo "Setting blowfish_secret"
+    cp config.sample.inc.php config.inc.php
+    BLOWFISHSECRET=$(dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev | tr -dc 'a-zA-Z0-9')
+    sudo sed -i "s|cfg\['blowfish_secret'\] = ''|cfg['blowfish_secret'] = '$BLOWFISHSECRET'|" config.inc.php
     echo "Installing Composer"
     curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
     chown -R www-data /var/www/
