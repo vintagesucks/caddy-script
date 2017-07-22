@@ -348,19 +348,28 @@ EOT
 
 function install_php()
 {
-  echo "Adding PHP7 repository"
+  if [ "$shopware" = 1 ]; then
+    PHP="php7.0"
+    PHPV="7.0"
+    OLDPHPCONF="listen \= \/run\/php\/php7\.0\-fpm\.sock"
+  else
+    PHP="php7.1"
+    PHPV="7.1"
+    OLDPHPCONF="listen \= \/run\/php\/php7\.1\-fpm\.sock"
+  fi
+
+  echo "Adding PHP repository"
   apt-get install -y language-pack-en-base software-properties-common
   LC_ALL=en_US.UTF-8 add-apt-repository ppa:ondrej/php -y
   echo "Check Packages for updates"
   sudo apt-get update
-  echo "Installing PHP7 and extensions"
-  sudo apt-get install php7.0-fpm php7.0-mysql php7.0-curl php7.0-intl php7.0-mcrypt php7.0-mbstring php7.0-soap php7.0-xml php7.0-zip php-memcached memcached -y
+  echo "Installing PHP and extensions"
+  sudo apt-get install ${PHP}-fpm ${PHP}-mysql ${PHP}-curl ${PHP}-intl ${PHP}-mcrypt ${PHP}-mbstring ${PHP}-soap ${PHP}-xml ${PHP}-zip php-memcached memcached -y
   echo "Configuring PHP Settings for Caddy"
-  OLDPHPCONF="listen \= \/run\/php\/php7\.0\-fpm\.sock"
   NEWPHPCONF="listen \= 127\.0\.0\.1\:9000"
-  sudo sed -i "s/${OLDPHPCONF}/${NEWPHPCONF}/g" /etc/php/7.0/fpm/pool.d/www.conf
+  sudo sed -i "s/${OLDPHPCONF}/${NEWPHPCONF}/g" /etc/php/${PHPV}/fpm/pool.d/www.conf
   echo "Restarting PHP"
-  sudo service php7.0-fpm restart
+  sudo service ${PHP}-fpm restart
 }
 
 function install_mailutils()
