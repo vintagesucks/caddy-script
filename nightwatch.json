@@ -1,0 +1,23 @@
+{
+  "src_folders" : ["tests/nightwatch"],
+
+  "test_settings" : {
+    "default" : {
+      "selenium_port"  : 9515,
+      "selenium_host"  : "127.0.0.1",
+      "default_path_prefix" : "",
+
+      "desiredCapabilities": {
+        "browserName": "chrome",
+        "chromeOptions" : {
+          "args" : [
+            "--no-sandbox", 
+            "--disable-gpu", 
+            "--headless"
+          ]
+        },
+        "acceptSslCerts": true
+      }
+    }
+  }
+}
