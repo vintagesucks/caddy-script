@@ -37,6 +37,7 @@ function readDomain()
   if [[ $TRAVIS_CI == 1 ]]; then
     protocol="http://"
     domain="127.0.0.1"
+    port=":1337"
   else
     read -e -p "Enter a domain (e.g. example.org) " -r domain
     if [[ "${#domain}" -lt 1 ]]; then
@@ -94,7 +95,9 @@ function readCaddyExtensions()
 
 function readWordPress()
 {
-  if [[ $TRAVIS_CI == 1 ]]; then
+  if [ "$TRAVIS_CI" == 1 ] && [ "$FEATURE" = "WordPress" ]; then
+    wordpress=1
+  elif [ "$TRAVIS_CI" == 1 ] && [ "$FEATURE" != "WordPress" ]; then
     wordpress=0
   else
     read -p "Install WordPress? (Y/N)" -n 1 -r
@@ -112,7 +115,9 @@ function readWordPress()
 
 function readShopware()
 {
-  if [[ $TRAVIS_CI == 1 ]]; then
+  if [ "$TRAVIS_CI" == 1 ] && [ "$FEATURE" = "Shopware" ]; then
+    shopware=1
+  elif [ "$TRAVIS_CI" == 1 ] && [ "$FEATURE" != "Shopware" ]; then
     shopware=0
   else
     if [ "$wordpress" = 1 ]; then
@@ -134,7 +139,9 @@ function readShopware()
 
 function readPhpMyAdmin()
 {
-  if [[ $TRAVIS_CI == 1 ]]; then
+  if [ "$TRAVIS_CI" == 1 ] && [ "$FEATURE" = "phpMyAdmin" ]; then
+    phpmyadmin=1
+  elif [ "$TRAVIS_CI" == 1 ] && [ "$FEATURE" != "phpMyAdmin" ]; then
     phpmyadmin=0
   else
     read -p "Install phpMyAdmin? (Y/N)" -n 1 -r
@@ -261,7 +268,7 @@ function install_caddy()
   runuser -l caddy -c "mkdir log/${domain}"
   mkdir /var/www/"${domain}"
   if [ "$wordpress" = 0 ] && [ "$shopware" = 0 ]; then
-    echo 'Hello World' > /var/www/"${domain}"/index.html
+    echo '<html><head><title>Hello World</title></head><body>Hello World</body></html>' > /var/www/"${domain}"/index.html
   fi
 }
 
@@ -283,7 +290,11 @@ EOT
   fi
 
   # Open Caddyfile
-  if valid_ip "${domain}"; then
+  if [[ $TRAVIS_CI == 1 ]]; then
+    sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
+${domain}${port} {
+EOT
+  elif valid_ip "${domain}"; then
     sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
 ${domain}:80 {
 EOT
@@ -483,7 +494,7 @@ function install_wordpress()
     # create wp-config.php
     wp core config --path=/var/www/"${domain}" --dbname=wordpress --dbuser=wordpress --dbpass="${wpdbpass}" --dbhost=localhost --allow-root
     #install WordPress
-    wp core install --path=/var/www/"${domain}" --url="${protocol}""${domain}" --title="${domain}" --admin_user=admin --admin_password="${wpadminpass}" --admin_email="${email}" --skip-email --allow-root
+    wp core install --path=/var/www/"${domain}" --url="${protocol}""${domain}${port}" --title="${domain}" --admin_user=admin --admin_password="${wpadminpass}" --admin_email="${email}" --skip-email --allow-root
   fi
 }
 
@@ -507,7 +518,7 @@ function install_shopware()
     chmod +x /usr/local/bin/sw
 
     echo "Installing Shopware specific PHP extensions"
-    apt-get install php7.0-gd -y
+    apt-get install php7.0-gd wget -y
     wget http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz
     tar xvfz ioncube_loaders_lin_x86-64.tar.gz
     sudo cp ioncube/ioncube_loader_lin_7.0.so /usr/lib/php/20151012/
@@ -532,7 +543,7 @@ EOT
     sudo service php7.0-fpm restart
 
     echo "Installing Shopware via Shopware CLI Tools"
-    sw install:release --release=latest --install-dir=/var/www/"${domain}" --db-user=shopware --db-password="${swdbpass}" --admin-username=admin --admin-password="${swadminpass}" --db-name=shopware --shop-path=CS_SW_PATH_PLACEHOLDER --shop-host="${domain}"
+    sw install:release --release=latest --install-dir=/var/www/"${domain}" --db-user=shopware --db-password="${swdbpass}" --admin-username=admin --admin-password="${swadminpass}" --db-name=shopware --shop-path=CS_SW_PATH_PLACEHOLDER --shop-host="${domain}${port}"
     mysql -uroot -e "UPDATE shopware.s_core_shops SET base_path = NULL WHERE s_core_shops.id = 1;"
   fi
 }
@@ -567,8 +578,12 @@ EOT
 
 function finish()
 {
-  echo "Remove packages that are no more needed."
-  apt autoremove -y
+  if [[ $TRAVIS_CI == 1 ]]; then
+    sleep 0
+  else
+    echo "Remove packages that are no more needed."
+    apt autoremove -y
+  fi
   echo "Setting proper directory permissions"
   sudo chown -R caddy /home/caddy/
   sudo chown -R www-data:www-data /var/www/
@@ -618,13 +633,44 @@ Please keep this information somewhere safe (preferably not here!)
 EOT
   fi
   if [[ $TRAVIS_CI == 1 ]]; then
-    sleep 0
+    ulimit -n 8192
+    runuser -l caddy -c "/usr/local/bin/caddy -conf=/home/caddy/Caddyfile &"
   else
     service caddy start
+    service caddy status
     clear
   fi
   echo "Successfully installed Caddy!"
   echo "Please view /home/caddy/caddy-script.log for details."
+}
+
+function tests()
+{
+  if [[ $TRAVIS_CI == 1 ]]; then
+    echo "Testing installation"
+    echo "Installing Node.js"
+    curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+    sudo apt-get install -y nodejs
+    echo "Installing Nightwatch"
+    npm install -g nightwatch
+    echo "Installing Chrome"
+    sudo apt-get install -y gconf-service libasound2 libgconf-2-4 libnspr4 libx11-dev fonts-liberation xdg-utils libnss3 libxss1 libappindicator1 libindicator7 unzip wget
+    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+    sudo dpkg -i google-chrome*.deb
+    sudo apt-get install -f
+    echo "Installing ChromeDriver"
+    wget -N http://chromedriver.storage.googleapis.com/2.30/chromedriver_linux64.zip
+    unzip chromedriver_linux64.zip
+    chmod +x chromedriver
+    sudo mv -f chromedriver /usr/local/share/chromedriver
+    sudo ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
+    sudo ln -s /usr/local/share/chromedriver /usr/bin/chromedriver
+    echo "Running ChromeDriver"
+    nohup /usr/bin/chromedriver &
+    echo "Running Nightwatch Tests"
+    cd /
+    nightwatch --test /tests/nightwatch/"$FEATURE".js
+  fi
 }
 
 set -e
@@ -641,3 +687,4 @@ install_wordpress
 install_shopware
 setup_unattended_upgrades
 finish
+tests
