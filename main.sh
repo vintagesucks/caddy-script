@@ -369,6 +369,8 @@ function install_php()
     OLDPHPCONF="listen \= \/run\/php\/php7\.1\-fpm\.sock"
   fi
 
+  echo "Check Packages for updates"
+  sudo apt-get update
   echo "Adding PHP repository"
   apt-get install -y language-pack-en-base software-properties-common
   LC_ALL=en_US.UTF-8 add-apt-repository ppa:ondrej/php -y
