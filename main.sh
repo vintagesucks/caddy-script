@@ -511,12 +511,12 @@ function install_shopware()
     echo "Installing required packages"
     apt install openjdk-9-jre-headless ant unzip -y
     echo "Getting sw.phar"
-    curl -o /usr/local/bin/sw http://shopwarelabs.github.io/sw-cli-tools/sw.phar
+    curl -o /usr/local/bin/sw https://shopwarelabs.github.io/sw-cli-tools/sw.phar
     chmod +x /usr/local/bin/sw
 
     echo "Installing Shopware specific PHP extensions"
     apt-get install ${PHP}-gd wget -y
-    wget http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz
+    wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz
     tar xvfz ioncube_loaders_lin_x86-64.tar.gz
     sudo cp ioncube/ioncube_loader_lin_${PHPV}.so /usr/lib/php/${PHPE}/
     sudo rm ioncube_loaders_lin_x86-64.tar.gz
@@ -656,7 +656,7 @@ function tests()
     sudo dpkg -i google-chrome*.deb
     sudo apt-get install -f
     echo "Installing ChromeDriver"
-    wget -N http://chromedriver.storage.googleapis.com/2.30/chromedriver_linux64.zip
+    wget -N https://chromedriver.storage.googleapis.com/2.30/chromedriver_linux64.zip
     unzip chromedriver_linux64.zip
     chmod +x chromedriver
     sudo mv -f chromedriver /usr/local/share/chromedriver
