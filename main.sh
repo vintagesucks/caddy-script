@@ -359,16 +359,10 @@ EOT
 
 function install_php()
 {
-  if [ "$shopware" = 1 ]; then
-    PHP="php7.0"
-    PHPV="7.0"
-    OLDPHPCONF="listen \= \/run\/php\/php7\.0\-fpm\.sock"
-  else
-    PHP="php7.1"
-    PHPV="7.1"
-    OLDPHPCONF="listen \= \/run\/php\/php7\.1\-fpm\.sock"
-  fi
-
+  PHP="php7.1"
+  PHPV="7.1"
+  PHPE="20160303"
+    
   echo "Check Packages for updates"
   sudo apt-get update
   echo "Adding PHP repository"
@@ -379,6 +373,7 @@ function install_php()
   echo "Installing PHP and extensions"
   sudo apt-get install ${PHP}-fpm ${PHP}-mysql ${PHP}-curl ${PHP}-intl ${PHP}-mcrypt ${PHP}-mbstring ${PHP}-soap ${PHP}-xml ${PHP}-zip php-memcached memcached -y
   echo "Configuring PHP Settings for Caddy"
+  OLDPHPCONF="listen \= \/run\/php\/php7\.1\-fpm\.sock"
   NEWPHPCONF="listen \= 127\.0\.0\.1\:9000"
   sudo sed -i "s/${OLDPHPCONF}/${NEWPHPCONF}/g" /etc/php/${PHPV}/fpm/pool.d/www.conf
   echo "Restarting PHP"
@@ -520,29 +515,29 @@ function install_shopware()
     chmod +x /usr/local/bin/sw
 
     echo "Installing Shopware specific PHP extensions"
-    apt-get install php7.0-gd wget -y
+    apt-get install ${PHP}-gd wget -y
     wget http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz
     tar xvfz ioncube_loaders_lin_x86-64.tar.gz
-    sudo cp ioncube/ioncube_loader_lin_7.0.so /usr/lib/php/20151012/
+    sudo cp ioncube/ioncube_loader_lin_${PHPV}.so /usr/lib/php/${PHPE}/
     sudo rm ioncube_loaders_lin_x86-64.tar.gz
     sudo rm -rf ioncube_loaders_lin_x86-64
 
     echo "Making Shopware specific php.ini changes"
-    cat <<EOT >> /etc/php/7.0/fpm/php.ini
-zend_extension = "/usr/lib/php/20151012/ioncube_loader_lin_7.0.so"
+    cat <<EOT >> /etc/php/${PHPV}/fpm/php.ini
+zend_extension = "/usr/lib/php/${PHPE}/ioncube_loader_lin_${PHPV}.so"
 EOT
     OLDMEMORYLIMIT="memory_limit \= 128M"
     NEWMEMORYLIMIT="memory_limit \= 256M"
-    sudo sed -i "s/${OLDMEMORYLIMIT}/${NEWMEMORYLIMIT}/g" /etc/php/7.0/fpm/php.ini
+    sudo sed -i "s/${OLDMEMORYLIMIT}/${NEWMEMORYLIMIT}/g" /etc/php/${PHPV}/fpm/php.ini
     OLDMAXFILESIZE="upload_max_filesize \= 2M"
     NEWMAXFILESIZE="upload_max_filesize \= 6M"
-    sudo sed -i "s/${OLDMAXFILESIZE}/${NEWMAXFILESIZE}/g" /etc/php/7.0/fpm/php.ini
+    sudo sed -i "s/${OLDMAXFILESIZE}/${NEWMAXFILESIZE}/g" /etc/php/${PHPV}/fpm/php.ini
 
     echo "Installing Shopware specific packages"
     apt-get install libfreetype6 -y
 
     echo "Restarting PHP"
-    sudo service php7.0-fpm restart
+    sudo service ${PHP}-fpm restart
 
     echo "Installing Shopware via Shopware CLI Tools"
     sw install:release --release=latest --install-dir=/var/www/"${domain}" --db-user=shopware --db-password="${swdbpass}" --admin-username=admin --admin-password="${swadminpass}" --db-name=shopware --shop-path=CS_SW_PATH_PLACEHOLDER --shop-host="${domain}${port}"
