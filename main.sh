@@ -255,7 +255,16 @@ function create_user()
 function install_caddy()
 {
   echo "Installing Caddy."
-  sudo -u caddy curl -fsSL https://getcaddy.com | bash -s "${caddy_extensions}"
+  apt-get install wget -y
+  wget -O /getcaddy.com.sh https://getcaddy.com
+  OLDKEYSERVER="ha\.pool\.sks\-keyservers\.net"
+  NEWKEYSERVER="keyserver\.ubuntu\.com"
+  sudo sed -i "s/${OLDKEYSERVER}/${NEWKEYSERVER}/g" /getcaddy.com.sh
+  OLDPLUGINS="\$1"
+  NEWPLUGINS="${caddy_extensions}"
+  sudo sed -i "s/${OLDPLUGINS}/${NEWPLUGINS}/g" /getcaddy.com.sh
+  sudo -u caddy sudo bash /getcaddy.com.sh
+  rm /getcaddy.com.sh
   echo "Setting permissions for Caddy."
   sudo apt-get install libcap2-bin -y
   sudo setcap cap_net_bind_service=+ep /usr/local/bin/caddy
@@ -515,7 +524,7 @@ function install_shopware()
     chmod +x /usr/local/bin/sw
 
     echo "Installing Shopware specific PHP extensions"
-    apt-get install ${PHP}-gd wget -y
+    apt-get install ${PHP}-gd -y
     wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz
     tar xvfz ioncube_loaders_lin_x86-64.tar.gz
     sudo cp ioncube/ioncube_loader_lin_${PHPV}.so /usr/lib/php/${PHPE}/
