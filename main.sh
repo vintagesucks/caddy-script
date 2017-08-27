@@ -643,7 +643,6 @@ EOT
     runuser -l caddy -c "/usr/local/bin/caddy -conf=/home/caddy/Caddyfile &"
   else
     service caddy start
-    service caddy status
     clear
   fi
   echo "Successfully installed Caddy!"
