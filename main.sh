@@ -654,12 +654,19 @@ function tests()
   if [[ $TRAVIS_CI == 1 ]]; then
     echo "Testing installation"
     echo "Installing Node.js"
-    curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+    if [ -z "$NODE_DISTRO" ]; then
+      curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+    else
+      curl --silent https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
+      echo "deb https://deb.nodesource.com/node_6.x $NODE_DISTRO main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+      echo "deb-src https://deb.nodesource.com/node_6.x $NODE_DISTRO main" | sudo tee -a /etc/apt/sources.list.d/nodesource.list
+    fi
+    apt-get update
     sudo apt-get install -y nodejs
     echo "Installing Nightwatch"
     npm install -g nightwatch
     echo "Installing Chrome"
-    sudo apt-get install -y gconf-service libasound2 libgconf-2-4 libnspr4 libx11-dev fonts-liberation xdg-utils libnss3 libxss1 libappindicator1 libindicator7 unzip wget
+    sudo apt-get install -y libgtk-3-0 gconf-service libasound2 libgconf-2-4 libnspr4 libx11-dev fonts-liberation xdg-utils libnss3 libxss1 libappindicator1 libindicator7 unzip wget
     wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
     sudo dpkg -i google-chrome*.deb
     sudo apt-get install -f

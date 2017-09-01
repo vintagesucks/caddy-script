@@ -17,6 +17,7 @@ Caddy installation script (automated)
 #### Tested on
 - Ubuntu 16.04 x64
 - Ubuntu 17.04 x64
+- Ubuntu 17.10 x64
 
 #### Usage
 `bash <(curl -s https://raw.githubusercontent.com/vintagesucks/caddy-script/master/main.sh)`
