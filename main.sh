@@ -665,8 +665,8 @@ function tests()
     sudo apt-get install -f
     echo "Installing ChromeDriver"
     wget -O chromedriver_version.txt https://chromedriver.storage.googleapis.com/LATEST_RELEASE
-    CHROMEDRIVER_VERSION=`cat chromedriver_version.txt`
-    wget -N https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
+    CHROMEDRIVER_VERSION=$(cat chromedriver_version.txt)
+    wget -N https://chromedriver.storage.googleapis.com/"$CHROMEDRIVER_VERSION"/chromedriver_linux64.zip
     unzip chromedriver_linux64.zip
     chmod +x chromedriver
     sudo mv -f chromedriver /usr/local/share/chromedriver
