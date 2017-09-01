@@ -12,10 +12,14 @@ env:
   - UBUNTU="17.04" FEATURE="phpMyAdmin"
   - UBUNTU="17.04" FEATURE="WordPress"
   - UBUNTU="17.04" FEATURE="Shopware"
+  - UBUNTU="17.10" FEATURE="HelloWorld" NODE_DISTRO="zesty"
+  - UBUNTU="17.10" FEATURE="phpMyAdmin" NODE_DISTRO="zesty"
+  - UBUNTU="17.10" FEATURE="WordPress" NODE_DISTRO="zesty"
+  - UBUNTU="17.10" FEATURE="Shopware" NODE_DISTRO="zesty"
 
 script:
   - docker build -t caddy-script -f Dockerfiles/$UBUNTU .
-  - docker run caddy-script /bin/bash -c "export TRAVIS_CI=1; export FEATURE=$FEATURE; apt-get update; apt-get install -y curl sudo software-properties-common; bash main.sh"
+  - docker run caddy-script /bin/bash -c "export TRAVIS_CI=1; export FEATURE=$FEATURE; export NODE_DISTRO=$NODE_DISTRO; apt-get update; apt-get install -y curl sudo software-properties-common; bash main.sh"
 
 notifications:
   email:
