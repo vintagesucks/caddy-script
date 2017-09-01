@@ -277,7 +277,7 @@ function install_caddy()
   runuser -l caddy -c "mkdir log/${domain}"
   mkdir /var/www/"${domain}"
   if [ "$wordpress" = 0 ] && [ "$shopware" = 0 ]; then
-    echo '<html><head><title>Hello World</title></head><body>Hello World</body></html>' > /var/www/"${domain}"/index.html
+    echo '<html lang="en"><head><title>Hello World</title></head><body>Hello World</body></html>' > /var/www/"${domain}"/index.html
   fi
 }
 
