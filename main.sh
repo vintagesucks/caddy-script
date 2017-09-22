@@ -484,7 +484,7 @@ function install_wordpress()
     wpadminpass=$(dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev | tr -dc 'a-zA-Z0-9')
 
     # Download and install wp-cli
-    curl -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+    curl -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli-nightly.phar
     chmod +x /usr/local/bin/wp
     # Download latest WordPress version
     wp core download --path=/var/www/"${domain}" --allow-root
