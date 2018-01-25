@@ -645,13 +645,7 @@ function tests()
   if [[ $TRAVIS_CI == 1 ]]; then
     echo "Testing installation"
     echo "Installing Node.js"
-    if [ -z "$NODE_DISTRO" ]; then
-      curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
-    else
-      curl --silent https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
-      echo "deb https://deb.nodesource.com/node_6.x $NODE_DISTRO main" | sudo tee /etc/apt/sources.list.d/nodesource.list
-      echo "deb-src https://deb.nodesource.com/node_6.x $NODE_DISTRO main" | sudo tee -a /etc/apt/sources.list.d/nodesource.list
-    fi
+    curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
     apt-get update
     sudo apt-get install -y nodejs
     echo "Installing Nightwatch"
