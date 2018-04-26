@@ -651,7 +651,7 @@ function tests()
     echo "Installing Nightwatch"
     npm install -g nightwatch
     echo "Installing Chrome"
-    sudo apt-get install -y libgtk-3-0 gconf-service libasound2 libgconf-2-4 libnspr4 libx11-dev fonts-liberation xdg-utils libnss3 libxss1 libappindicator1 libindicator7 unzip wget
+    sudo apt-get install -y libgtk-3-0 gconf-service libasound2 libgconf-2-4 libnspr4 libx11-dev fonts-liberation xdg-utils libnss3 libxss1 libappindicator1 libindicator7 unzip wget libappindicator3-1
     wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
     sudo dpkg -i google-chrome*.deb
     sudo apt-get install -f
