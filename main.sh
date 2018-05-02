@@ -649,7 +649,16 @@ function tests()
     echo "Installing Node.js"
     curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
     apt-get update
-    sudo apt-get install -y nodejs npm
+    case $version in
+    16.04)
+        sudo apt-get install -y nodejs
+        ;;
+    17.10)
+        sudo apt-get install -y nodejs
+        ;;
+    *)
+        sudo apt-get install -y nodejs npm
+    esac
     echo "Installing Nightwatch"
     npm install -g nightwatch
     echo "Installing Chrome"
@@ -675,6 +684,7 @@ function tests()
 }
 
 set -e
+version=$(lsb_release -sr)
 prepare
 check_root
 create_user
