@@ -511,6 +511,8 @@ function install_shopware()
     swadminpass=$(dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev | tr -dc 'a-zA-Z0-9')
 
     echo "Installing required packages"
+    sudo add-apt-repository ppa:doko/openjdk
+    sudo apt-get update
     apt install openjdk-9-jre-headless ant unzip -y
     echo "Getting sw.phar"
     curl -o /usr/local/bin/sw https://shopwarelabs.github.io/sw-cli-tools/sw.phar
