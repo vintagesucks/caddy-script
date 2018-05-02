@@ -198,7 +198,7 @@ function prepare()
 {
   checkLogfile
   if [[ $TRAVIS_CI == 1 ]]; then
-    sleep 0
+    export DEBIAN_FRONTEND=noninteractive
   else
     sudo dpkg-reconfigure tzdata
   fi
