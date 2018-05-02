@@ -198,7 +198,8 @@ function prepare()
 {
   checkLogfile
   if [[ $TRAVIS_CI == 1 ]]; then
-    export DEBIAN_FRONTEND=noninteractive
+    ln -fs /usr/share/zoneinfo/Europe/Paris /etc/localtime
+    dpkg-reconfigure --frontend noninteractive tzdata
   else
     sudo dpkg-reconfigure tzdata
   fi
