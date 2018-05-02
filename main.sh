@@ -198,6 +198,7 @@ function prepare()
 {
   checkLogfile
   if [[ $TRAVIS_CI == 1 ]]; then
+    apt-get install -y tzdata
     ln -fs /usr/share/zoneinfo/Europe/Paris /etc/localtime
     dpkg-reconfigure --frontend noninteractive tzdata
   else
