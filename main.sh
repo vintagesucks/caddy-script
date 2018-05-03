@@ -447,6 +447,7 @@ function install_mariadb()
 {
   MARIADB_ROOT_PASS=$(dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev | tr -dc 'a-zA-Z0-9')
   sudo apt-get install mariadb-server -y
+  service mysql restart
   apt install expect -y
 	SECURE_MYSQL=$(expect -c "
   	set timeout 5
