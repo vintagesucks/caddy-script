@@ -198,7 +198,9 @@ function prepare()
 {
   checkLogfile
   if [[ $TRAVIS_CI == 1 ]]; then
-    sleep 0
+    apt-get install -y tzdata
+    ln -fs /usr/share/zoneinfo/Europe/Paris /etc/localtime
+    dpkg-reconfigure --frontend noninteractive tzdata
   else
     sudo dpkg-reconfigure tzdata
   fi
@@ -445,6 +447,7 @@ function install_mariadb()
 {
   MARIADB_ROOT_PASS=$(dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev | tr -dc 'a-zA-Z0-9')
   sudo apt-get install mariadb-server -y
+  service mysql restart
   apt install expect -y
 	SECURE_MYSQL=$(expect -c "
   	set timeout 5
@@ -509,7 +512,16 @@ function install_shopware()
     swadminpass=$(dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev | tr -dc 'a-zA-Z0-9')
 
     echo "Installing required packages"
-    apt install openjdk-9-jre-headless ant unzip -y
+    case $version in
+    16.04)
+        apt install openjdk-9-jre-headless ant unzip -y
+        ;;
+    17.10)
+        apt install openjdk-9-jre-headless ant unzip -y
+        ;;
+    *)
+        apt install ant unzip -y
+    esac
     echo "Getting sw.phar"
     curl -o /usr/local/bin/sw https://shopwarelabs.github.io/sw-cli-tools/sw.phar
     chmod +x /usr/local/bin/sw
@@ -647,7 +659,16 @@ function tests()
     echo "Installing Node.js"
     curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
     apt-get update
-    sudo apt-get install -y nodejs
+    case $version in
+    16.04)
+        sudo apt-get install -y nodejs
+        ;;
+    17.10)
+        sudo apt-get install -y nodejs
+        ;;
+    *)
+        sudo apt-get install -y nodejs npm
+    esac
     echo "Installing Nightwatch"
     npm install -g nightwatch
     echo "Installing Chrome"
@@ -673,6 +694,7 @@ function tests()
 }
 
 set -e
+version=$(lsb_release -sr)
 prepare
 check_root
 create_user
