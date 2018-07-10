@@ -1,7 +1,7 @@
 ## :whale: caddy-script  
 Caddy installation script (automated)
 
-[![Travis CI](https://api.travis-ci.org/vintagesucks/caddy-script.svg?branch=master)](https://travis-ci.org/vintagesucks/caddy-script)   [![Code Climate](https://codeclimate.com/github/vintagesucks/caddy-script/badges/gpa.svg)](https://codeclimate.com/github/vintagesucks/caddy-script) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a0b0746d7a9f4a9db9fe7ae0d1fd775b)](https://www.codacy.com/app/vintagesucks/caddy-script?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=vintagesucks/caddy-script&amp;utm_campaign=Badge_Grade)
+[![Travis CI](https://api.travis-ci.org/vintagesucks/caddy-script.svg?branch=master)](https://travis-ci.org/vintagesucks/caddy-script) [![BCH compliance](https://bettercodehub.com/edge/badge/vintagesucks/caddy-script?branch=master)](https://bettercodehub.com/) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a0b0746d7a9f4a9db9fe7ae0d1fd775b)](https://www.codacy.com/app/vintagesucks/caddy-script?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=vintagesucks/caddy-script&amp;utm_campaign=Badge_Grade)
 
 #### Features
 - [x] Install Caddy
