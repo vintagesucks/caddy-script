@@ -1,7 +1,7 @@
 ## :whale: caddy-script  
 Caddy installation script (automated)
 
-[![Travis CI](https://api.travis-ci.org/vintagesucks/caddy-script.svg?branch=master)](https://travis-ci.org/vintagesucks/caddy-script) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a0b0746d7a9f4a9db9fe7ae0d1fd775b)](https://www.codacy.com/app/vintagesucks/caddy-script) [![BCH compliance](https://bettercodehub.com/edge/badge/vintagesucks/caddy-script?branch=master)](https://bettercodehub.com/) [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-round)](#contributors) [![Open Source Helpers](https://www.codetriage.com/vintagesucks/caddy-script/badges/users.svg)](https://www.codetriage.com/vintagesucks/caddy-script)
+[![Travis CI](https://api.travis-ci.org/vintagesucks/caddy-script.svg?branch=master)](https://travis-ci.org/vintagesucks/caddy-script) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a0b0746d7a9f4a9db9fe7ae0d1fd775b)](https://www.codacy.com/app/vintagesucks/caddy-script) [![BCH compliance](https://bettercodehub.com/edge/badge/vintagesucks/caddy-script?branch=master)](https://bettercodehub.com/) [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors) [![Open Source Helpers](https://www.codetriage.com/vintagesucks/caddy-script/badges/users.svg)](https://www.codetriage.com/vintagesucks/caddy-script)
 
 #### Features
 - [x] Install Caddy
@@ -46,7 +46,7 @@ Thanks goes to these wonderful people ([emoji key](https://github.com/all-contri
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore -->
-| [<img src="https://avatars0.githubusercontent.com/u/13335308?v=4" width="100px;" alt="Nikolas Evers"/><br /><sub><b>Nikolas Evers</b></sub>](https://nikol.as)<br />[💻](https://github.com/vintagesucks/caddy-script/commits?author=vintagesucks "Code") |
+| [<img src="https://avatars0.githubusercontent.com/u/13335308?v=4" width="100px;" alt="Nikolas Evers"/><br /><sub><b>Nikolas Evers</b></sub>](https://nikol.as)<br />[💻](https://github.com/vintagesucks/caddy-script/commits?author=vintagesucks "Code") [🚧](#maintenance-vintagesucks "Maintenance") |
 | :---: |
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
