@@ -32,14 +32,6 @@ You can read the [Caddy Documentation](https://caddyserver.com/docs) if you need
 - [caddy.service](https://denbeke.be/blog/servers/running-caddy-server-as-a-service-with-systemd/) file by Mathias Beke  
 - [Validating an IP Address in a Bash Script](https://www.linuxjournal.com/content/validating-ip-address-bash-script) by Mitch Frazier
 
-#### Support me
-You can support me by signing up for an account at [DigitalOcean](https://m.do.co/c/3c23791febd7)\* or [Linode](https://www.linode.com/?r=d642007a0d1ab4e27e2ad163aa87e6f93b65088e).\*\*
-
----
-
-&thinsp;&thinsp;\* Referral link to [https://digitalocean.com/](https://digitalocean.com/)   
-\*\* Referral link to [https://www.linode.com/](https://www.linode.com/)
-
 ## Contributors
 
 Thanks goes to these wonderful people ([emoji key](https://github.com/all-contributors/all-contributors#emoji-key)):
