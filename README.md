@@ -46,7 +46,7 @@ Thanks goes to these wonderful people ([emoji key](https://github.com/all-contri
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore -->
-| [<img src="https://avatars0.githubusercontent.com/u/13335308?v=4" width="100px;" alt="Nikolas Evers"/><br /><sub><b>Nikolas Evers</b></sub>](https://nikol.as)<br />[💻](https://github.com/vintagesucks/caddy-script/commits?author=vintagesucks "Code") [🚧](#maintenance-vintagesucks "Maintenance") | [<img src="https://avatars3.githubusercontent.com/u/1649452?v=4" width="100px;" alt="Per Søderlind"/><br /><sub><b>Per Søderlind</b></sub>](https://soderlind.no)<br />[🐛](https://github.com/vintagesucks/caddy-script/issues?q=author%3Asoderlind "Bug reports") |
+| [<img src="https://avatars0.githubusercontent.com/u/13335308?v=4" width="100px;" alt="Nikolas Evers"/><br /><sub><b>Nikolas Evers</b></sub>](https://nikol.as)<br />[💻](https://github.com/vintagesucks/caddy-script/commits?author=vintagesucks "Code") [🚧](#maintenance-vintagesucks "Maintenance") | [<img src="https://avatars3.githubusercontent.com/u/1649452?v=4" width="100px;" alt="Per Søderlind"/><br /><sub><b>Per Søderlind</b></sub>](https://soderlind.no)<br />[🐛](https://github.com/vintagesucks/caddy-script/issues?q=author%3Asoderlind "Bug reports") [💻](https://github.com/vintagesucks/caddy-script/commits?author=soderlind "Code") |
 | :---: | :---: |
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
