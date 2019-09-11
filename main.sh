@@ -680,7 +680,7 @@ function tests()
     sudo ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
     sudo ln -s /usr/local/share/chromedriver /usr/bin/chromedriver
     echo "Running ChromeDriver"
-    nohup /usr/bin/chromedriver &
+    nohup /usr/bin/chromedriver --whitelisted-ips &
     echo "Running Nightwatch Tests"
     cd /
     nightwatch --test /tests/nightwatch/"$FEATURE".js
