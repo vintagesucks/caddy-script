@@ -642,7 +642,7 @@ function tests()
   if [[ $TRAVIS_CI == 1 ]]; then
     echo "Testing installation"
     echo "Installing Node.js"
-    curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+    curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
     apt-get update
     case $version in
     16.04)
