@@ -372,7 +372,7 @@ function install_php()
   echo "Check Packages for updates"
   sudo apt-get update
   echo "Installing PHP and extensions"
-  sudo apt-get install ${PHP}-fpm ${PHP}-mysql ${PHP}-curl ${PHP}-intl ${PHP}-mcrypt ${PHP}-mbstring ${PHP}-soap ${PHP}-xml ${PHP}-zip php-memcached memcached -y
+  sudo apt-get install ${PHP}-fpm ${PHP}-mysql ${PHP}-curl ${PHP}-intl ${PHP}-mbstring ${PHP}-soap ${PHP}-xml ${PHP}-zip php-memcached memcached -y
   echo "Configuring PHP Settings for Caddy"
   OLDPHPCONF="listen \= \/run\/php\/php7\.3\-fpm\.sock"
   NEWPHPCONF="listen \= 127\.0\.0\.1\:9000"

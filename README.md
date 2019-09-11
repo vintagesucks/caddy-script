@@ -11,7 +11,7 @@ Caddy installation script (automated)
 - [x] Configure Caddyfile with gzip, fast-cgi, logs & redirects
 - [x] Configure automatic security updates with email notifications [optional]
 - [x] Install WordPress [optional]
-- [x] Install Shopware [optional]
+- [x] Install Shopware 5 [optional]
 - [x] Install phpMyAdmin [optional]  
 
 #### Tested on
