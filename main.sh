@@ -580,7 +580,7 @@ function finish()
     sudo -u caddy cat <<EOT >> /home/caddy/caddy-script.log
 Thanks for using caddy-script!
 If you run into any issues related to this setup, please open an issue at
-https://github.com/vintagesucks/caddy-script.
+https://github.com/vintagesucks/caddy-script
 
 Domain:                       ${protocol}${domain}
 MariaDB root password:        ${MARIADB_ROOT_PASS}
@@ -596,7 +596,7 @@ EOT
     sudo -u caddy cat <<EOT >> /home/caddy/caddy-script.log
 Thanks for using caddy-script!
 If you run into any issues related to this setup, please open an issue at
-https://github.com/vintagesucks/caddy-script.
+https://github.com/vintagesucks/caddy-script
 
 Domain:                       ${protocol}${domain}
 MariaDB root password:        ${MARIADB_ROOT_PASS}
@@ -612,7 +612,7 @@ EOT
     sudo -u caddy cat <<EOT >> /home/caddy/caddy-script.log
 Thanks for using caddy-script!
 If you run into any issues related to this setup, please open an issue at
-https://github.com/vintagesucks/caddy-script.
+https://github.com/vintagesucks/caddy-script
 
 Domain:                       ${protocol}${domain}
 MariaDB root password:        ${MARIADB_ROOT_PASS}
