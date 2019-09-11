@@ -644,13 +644,7 @@ function tests()
     echo "Installing Node.js"
     curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
     apt-get update
-    case $version in
-    16.04)
-        sudo apt-get install -y nodejs
-        ;;
-    *)
-        sudo apt-get install -y nodejs npm
-    esac
+    sudo apt-get install -y nodejs
     echo "Installing Nightwatch"
     npm install -g nightwatch
     echo "Installing Chrome"
