@@ -16,7 +16,6 @@ Caddy installation script (automated)
 
 #### Tested on
 - Ubuntu 16.04 x64
-- Ubuntu 17.10 x64
 - Ubuntu 18.04 x64
 
 #### Usage

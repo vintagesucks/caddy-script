@@ -1,6 +1,0 @@
-FROM ubuntu:17.10
-COPY main.sh /
-COPY nightwatch.json /
-COPY tests/nightwatch/ /tests/nightwatch/
-RUN echo "#!/bin/bash\nexit 0" > /usr/sbin/policy-rc.d
-CMD ["/bin/bash"]

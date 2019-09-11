@@ -516,9 +516,6 @@ function install_shopware()
     16.04)
         apt install openjdk-9-jre-headless ant unzip -y
         ;;
-    17.10)
-        apt install openjdk-9-jre-headless ant unzip -y
-        ;;
     *)
         apt install ant unzip -y
     esac
@@ -661,9 +658,6 @@ function tests()
     apt-get update
     case $version in
     16.04)
-        sudo apt-get install -y nodejs
-        ;;
-    17.10)
         sudo apt-get install -y nodejs
         ;;
     *)
