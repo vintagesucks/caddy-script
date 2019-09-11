@@ -5,7 +5,7 @@ Caddy installation script (automated)
 
 #### Features
 - [x] Install Caddy
-- [x] Install PHP7
+- [x] Install PHP 7.3
 - [x] Install MariaDB
 - [x] Register Caddy as a service with systemd
 - [x] Configure Caddyfile with gzip, fast-cgi, logs & redirects

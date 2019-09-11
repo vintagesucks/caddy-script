@@ -361,8 +361,8 @@ EOT
 
 function install_php()
 {
-  PHP="php7.1"
-  PHPV="7.1"
+  PHP="php7.3"
+  PHPV="7.3"
     
   echo "Check Packages for updates"
   sudo apt-get update
@@ -374,7 +374,7 @@ function install_php()
   echo "Installing PHP and extensions"
   sudo apt-get install ${PHP}-fpm ${PHP}-mysql ${PHP}-curl ${PHP}-intl ${PHP}-mcrypt ${PHP}-mbstring ${PHP}-soap ${PHP}-xml ${PHP}-zip php-memcached memcached -y
   echo "Configuring PHP Settings for Caddy"
-  OLDPHPCONF="listen \= \/run\/php\/php7\.1\-fpm\.sock"
+  OLDPHPCONF="listen \= \/run\/php\/php7\.3\-fpm\.sock"
   NEWPHPCONF="listen \= 127\.0\.0\.1\:9000"
   sudo sed -i "s/${OLDPHPCONF}/${NEWPHPCONF}/g" /etc/php/${PHPV}/fpm/pool.d/www.conf
   echo "Restarting PHP"
