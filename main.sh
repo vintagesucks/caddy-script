@@ -379,6 +379,8 @@ function install_php()
   sudo sed -i "s/${OLDPHPCONF}/${NEWPHPCONF}/g" /etc/php/${PHPV}/fpm/pool.d/www.conf
   echo "Restarting PHP"
   sudo service ${PHP}-fpm restart
+  echo "Installing Composer"
+  curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
 }
 
 function install_mailutils()
@@ -394,21 +396,13 @@ function install_mailutils()
 function install_phpmyadmin()
 {
   if [[ ${phpmyadmin} == 1 ]]; then
-    mkdir /var/www/"${domain}"/phpmyadmin
-    echo "Installing Git"
-    apt install git -y
-    echo "Installing phpMyAdmin via Git";
-    cd /var/www/"${domain}"/phpmyadmin/
-    git clone https://github.com/phpmyadmin/phpmyadmin.git .
-    git checkout STABLE
+    composer create-project phpmyadmin/phpmyadmin /var/www/"${domain}"/phpmyadmin
     echo "Setting blowfish_secret"
+    cd /var/www/"${domain}"/phpmyadmin
     cp config.sample.inc.php config.inc.php
     BLOWFISHSECRET=$(dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev | tr -dc 'a-zA-Z0-9')
     sudo sed -i "s|cfg\['blowfish_secret'\] = ''|cfg['blowfish_secret'] = '$BLOWFISHSECRET'|" config.inc.php
-    echo "Installing Composer"
-    curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
     chown -R www-data /var/www/
-    sudo -u www-data composer update --no-dev
   fi
 }
 
