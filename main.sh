@@ -361,9 +361,8 @@ EOT
 
 function install_php()
 {
-  PHP="php7.1"
-  PHPV="7.1"
-  PHPE="20160303"
+  PHP="php7.3"
+  PHPV="7.3"
     
   echo "Check Packages for updates"
   sudo apt-get update
@@ -373,13 +372,15 @@ function install_php()
   echo "Check Packages for updates"
   sudo apt-get update
   echo "Installing PHP and extensions"
-  sudo apt-get install ${PHP}-fpm ${PHP}-mysql ${PHP}-curl ${PHP}-intl ${PHP}-mcrypt ${PHP}-mbstring ${PHP}-soap ${PHP}-xml ${PHP}-zip php-memcached memcached -y
+  sudo apt-get install ${PHP}-fpm ${PHP}-mysql ${PHP}-curl ${PHP}-intl ${PHP}-mbstring ${PHP}-soap ${PHP}-xml ${PHP}-zip php-memcached memcached -y
   echo "Configuring PHP Settings for Caddy"
-  OLDPHPCONF="listen \= \/run\/php\/php7\.1\-fpm\.sock"
+  OLDPHPCONF="listen \= \/run\/php\/php7\.3\-fpm\.sock"
   NEWPHPCONF="listen \= 127\.0\.0\.1\:9000"
   sudo sed -i "s/${OLDPHPCONF}/${NEWPHPCONF}/g" /etc/php/${PHPV}/fpm/pool.d/www.conf
   echo "Restarting PHP"
   sudo service ${PHP}-fpm restart
+  echo "Installing Composer"
+  curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
 }
 
 function install_mailutils()
@@ -395,21 +396,13 @@ function install_mailutils()
 function install_phpmyadmin()
 {
   if [[ ${phpmyadmin} == 1 ]]; then
-    mkdir /var/www/"${domain}"/phpmyadmin
-    echo "Installing Git"
-    apt install git -y
-    echo "Installing phpMyAdmin via Git";
-    cd /var/www/"${domain}"/phpmyadmin/
-    git clone https://github.com/phpmyadmin/phpmyadmin.git .
-    git checkout STABLE
+    composer create-project phpmyadmin/phpmyadmin /var/www/"${domain}"/phpmyadmin
     echo "Setting blowfish_secret"
+    cd /var/www/"${domain}"/phpmyadmin
     cp config.sample.inc.php config.inc.php
     BLOWFISHSECRET=$(dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev | tr -dc 'a-zA-Z0-9')
     sudo sed -i "s|cfg\['blowfish_secret'\] = ''|cfg['blowfish_secret'] = '$BLOWFISHSECRET'|" config.inc.php
-    echo "Installing Composer"
-    curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
     chown -R www-data /var/www/
-    sudo -u www-data composer update --no-dev
   fi
 }
 
@@ -516,9 +509,6 @@ function install_shopware()
     16.04)
         apt install openjdk-9-jre-headless ant unzip -y
         ;;
-    17.10)
-        apt install openjdk-9-jre-headless ant unzip -y
-        ;;
     *)
         apt install ant unzip -y
     esac
@@ -526,18 +516,7 @@ function install_shopware()
     curl -o /usr/local/bin/sw https://shopwarelabs.github.io/sw-cli-tools/sw.phar
     chmod +x /usr/local/bin/sw
 
-    echo "Installing Shopware specific PHP extensions"
-    apt-get install ${PHP}-gd wget -y
-    wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz
-    tar xvfz ioncube_loaders_lin_x86-64.tar.gz
-    sudo cp ioncube/ioncube_loader_lin_${PHPV}.so /usr/lib/php/${PHPE}/
-    sudo rm ioncube_loaders_lin_x86-64.tar.gz
-    sudo rm -rf ioncube_loaders_lin_x86-64
-
     echo "Making Shopware specific php.ini changes"
-    cat <<EOT >> /etc/php/${PHPV}/fpm/php.ini
-zend_extension = "/usr/lib/php/${PHPE}/ioncube_loader_lin_${PHPV}.so"
-EOT
     OLDMEMORYLIMIT="memory_limit \= 128M"
     NEWMEMORYLIMIT="memory_limit \= 256M"
     sudo sed -i "s/${OLDMEMORYLIMIT}/${NEWMEMORYLIMIT}/g" /etc/php/${PHPV}/fpm/php.ini
@@ -657,18 +636,9 @@ function tests()
   if [[ $TRAVIS_CI == 1 ]]; then
     echo "Testing installation"
     echo "Installing Node.js"
-    curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+    curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
     apt-get update
-    case $version in
-    16.04)
-        sudo apt-get install -y nodejs
-        ;;
-    17.10)
-        sudo apt-get install -y nodejs
-        ;;
-    *)
-        sudo apt-get install -y nodejs npm
-    esac
+    sudo apt-get install -y nodejs
     echo "Installing Nightwatch"
     npm install -g nightwatch
     echo "Installing Chrome"
@@ -686,7 +656,7 @@ function tests()
     sudo ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
     sudo ln -s /usr/local/share/chromedriver /usr/bin/chromedriver
     echo "Running ChromeDriver"
-    nohup /usr/bin/chromedriver &
+    nohup /usr/bin/chromedriver --whitelisted-ips &
     echo "Running Nightwatch Tests"
     cd /
     nightwatch --test /tests/nightwatch/"$FEATURE".js
