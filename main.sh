@@ -363,7 +363,6 @@ function install_php()
 {
   PHP="php7.1"
   PHPV="7.1"
-  PHPE="20160303"
     
   echo "Check Packages for updates"
   sudo apt-get update
@@ -523,18 +522,7 @@ function install_shopware()
     curl -o /usr/local/bin/sw https://shopwarelabs.github.io/sw-cli-tools/sw.phar
     chmod +x /usr/local/bin/sw
 
-    echo "Installing Shopware specific PHP extensions"
-    apt-get install ${PHP}-gd wget -y
-    wget https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz
-    tar xvfz ioncube_loaders_lin_x86-64.tar.gz
-    sudo cp ioncube/ioncube_loader_lin_${PHPV}.so /usr/lib/php/${PHPE}/
-    sudo rm ioncube_loaders_lin_x86-64.tar.gz
-    sudo rm -rf ioncube_loaders_lin_x86-64
-
     echo "Making Shopware specific php.ini changes"
-    cat <<EOT >> /etc/php/${PHPV}/fpm/php.ini
-zend_extension = "/usr/lib/php/${PHPE}/ioncube_loader_lin_${PHPV}.so"
-EOT
     OLDMEMORYLIMIT="memory_limit \= 128M"
     NEWMEMORYLIMIT="memory_limit \= 256M"
     sudo sed -i "s/${OLDMEMORYLIMIT}/${NEWMEMORYLIMIT}/g" /etc/php/${PHPV}/fpm/php.ini
