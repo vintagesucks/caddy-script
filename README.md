@@ -20,10 +20,10 @@ Caddy installation script
 #### Usage
 `bash <(curl -s https://raw.githubusercontent.com/vintagesucks/caddy-script/v2/main.sh)`
 
-You'll be asked for your timezone, an email, the domain/ip to use and additional features you want.
+You'll be asked for your timezone, an email and the domain/ip to use.
 
 #### Help
-You can read the [Caddy Documentation](https://caddyserver.com/docs) if you need more information about Caddy's features and extensions.
+You can read the [Caddy Documentation](https://caddyserver.com/docs/) if you need more information about Caddy.
 
 #### Acknowledgements
 - [Validating an IP Address in a Bash Script](https://www.linuxjournal.com/content/validating-ip-address-bash-script) by Mitch Frazier
