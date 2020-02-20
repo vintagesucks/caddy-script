@@ -19,7 +19,7 @@ Caddy installation script (automated)
 - Ubuntu 18.04
 
 #### Usage
-`bash <(curl -s https://raw.githubusercontent.com/vintagesucks/caddy-script/master/main.sh)`
+`bash <(curl -s https://raw.githubusercontent.com/vintagesucks/caddy-script/v1/main.sh)`
 
 You'll be asked for your timezone, an email, the domain/ip to use and additional features you want.
 
