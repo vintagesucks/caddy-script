@@ -1,17 +1,11 @@
-sudo: required
-
 services:
   - docker
 
 env:
-  - UBUNTU="16.04" FEATURE="HelloWorld"
-  - UBUNTU="16.04" FEATURE="phpMyAdmin"
-  - UBUNTU="16.04" FEATURE="WordPress"
-  - UBUNTU="16.04" FEATURE="Shopware"
   - UBUNTU="18.04" FEATURE="HelloWorld"
-  - UBUNTU="18.04" FEATURE="phpMyAdmin"
   - UBUNTU="18.04" FEATURE="WordPress"
-  - UBUNTU="18.04" FEATURE="Shopware"
+  - UBUNTU="19.10" FEATURE="HelloWorld"
+  - UBUNTU="19.10" FEATURE="WordPress"
 
 script:
   - docker build -t caddy-script -f Dockerfiles/$UBUNTU .
@@ -20,4 +14,4 @@ script:
 notifications:
   email:
     recipients:
-      - vintagesucks@gmail.com
+      - hello+travis@nikol.as
