@@ -1,7 +1,7 @@
 ## :whale: caddy-script  
 Caddy installation script
 
-[![Travis CI](https://api.travis-ci.org/vintagesucks/caddy-script.svg?branch=master)](https://travis-ci.org/vintagesucks/caddy-script) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a0b0746d7a9f4a9db9fe7ae0d1fd775b)](https://www.codacy.com/app/vintagesucks/caddy-script) [![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-round)](#contributors)
+[![Travis CI](https://api.travis-ci.org/vintagesucks/caddy-script.svg?branch=v2)](https://travis-ci.org/vintagesucks/caddy-script) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a0b0746d7a9f4a9db9fe7ae0d1fd775b)](https://www.codacy.com/app/vintagesucks/caddy-script) [![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-round)](#contributors)
 
 > ⚠️ This script installs Caddy v2, if you are looking for v1 please follow [this link](https://github.com/vintagesucks/caddy-script/tree/v1).
 
