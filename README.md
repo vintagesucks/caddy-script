@@ -1,34 +1,31 @@
 ## :whale: caddy-script  
-Caddy installation script (automated)
+Caddy installation script
 
-[![Travis CI](https://api.travis-ci.org/vintagesucks/caddy-script.svg?branch=master)](https://travis-ci.org/vintagesucks/caddy-script) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a0b0746d7a9f4a9db9fe7ae0d1fd775b)](https://www.codacy.com/app/vintagesucks/caddy-script) [![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-round)](#contributors)
+[![Travis CI](https://api.travis-ci.com/vintagesucks/caddy-script.svg?branch=v2)](https://travis-ci.com/vintagesucks/caddy-script) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a0b0746d7a9f4a9db9fe7ae0d1fd775b)](https://www.codacy.com/app/vintagesucks/caddy-script) [![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-round)](#contributors)
+
+> ⚠️ This script installs Caddy v2, if you are looking for v1 please follow [this link](https://github.com/vintagesucks/caddy-script/tree/v1).
 
 #### Features
-- [x] Install Caddy
-- [x] Install PHP 7.3
+- [x] Install Caddy v2.0.0-beta.14
+- [x] Install PHP 7.4
 - [x] Install MariaDB
 - [x] Register Caddy as a service with systemd
-- [x] Configure Caddyfile with gzip, fast-cgi, logs & redirects
-- [x] Configure automatic security updates with email notifications [optional]
+- [x] Configure Caddyfile with file_server, gzip, zstd, php_fastcgi
 - [x] Install WordPress [optional]
-- [x] Install Shopware 5 [optional]
-- [x] Install phpMyAdmin [optional]  
 
 #### Tested on
-- Ubuntu 16.04
 - Ubuntu 18.04
+- Ubuntu 19.10
 
 #### Usage
-`bash <(curl -s https://raw.githubusercontent.com/vintagesucks/caddy-script/v1/main.sh)`
+`bash <(curl -s https://raw.githubusercontent.com/vintagesucks/caddy-script/v2/main.sh)`
 
-You'll be asked for your timezone, an email, the domain/ip to use and additional features you want.
+You'll be asked for your timezone, an email and the domain/ip to use.
 
 #### Help
-You can read the [Caddy Documentation](https://caddyserver.com/docs) if you need more information about Caddy's features and extensions.
+You can read the [Caddy Documentation](https://caddyserver.com/docs/) if you need more information about Caddy.
 
 #### Acknowledgements
-- [getcaddy.com](https://getcaddy.com/)
-- [caddy.service](https://denbeke.be/blog/servers/running-caddy-server-as-a-service-with-systemd/) file by Mathias Beke  
 - [Validating an IP Address in a Bash Script](https://www.linuxjournal.com/content/validating-ip-address-bash-script) by Mitch Frazier
 
 ## Contributors

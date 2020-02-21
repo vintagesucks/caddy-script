@@ -72,27 +72,6 @@ function valid_ip()
   return $stat
 }
 
-function readCaddyExtensions()
-{
-  if [[ $TRAVIS_CI == 1 ]]; then
-    caddy_extensions="http.git"
-  else
-    read -e -p "Enter the Caddy extensions you want (e.g. http.git,http.upload) " -r caddy_extensions
-    if [[ "${#caddy_extensions}" = 0 ]]; then
-      read -p "Are you sure you want to continue without additional Caddy features? (Y/N)" -n 1 -r
-      echo
-      if [[ "$REPLY" =~ ^[Yy]$ ]]; then
-        sleep 0
-      elif [[ "$REPLY" =~ ^[Nn]$ ]]; then
-        readCaddyExtensions;
-      else
-        echo " >> Please enter either Y or N."
-        readCaddyExtensions
-      fi
-    fi
-  fi
-}
-
 function readWordPress()
 {
   if [ "$TRAVIS_CI" == 1 ] && [ "$FEATURE" = "WordPress" ]; then
@@ -109,68 +88,6 @@ function readWordPress()
     else
       echo " >> Please enter either Y or N."
       readWordPress
-    fi
-  fi
-}
-
-function readShopware()
-{
-  if [ "$TRAVIS_CI" == 1 ] && [ "$FEATURE" = "Shopware" ]; then
-    shopware=1
-  elif [ "$TRAVIS_CI" == 1 ] && [ "$FEATURE" != "Shopware" ]; then
-    shopware=0
-  else
-    if [ "$wordpress" = 1 ]; then
-      shopware=0
-    else
-      read -p "Install Shopware? (Y/N)" -n 1 -r
-      echo
-      if [[ "$REPLY" =~ ^[Yy]$ ]]; then
-        shopware=1
-      elif [[ "$REPLY" =~ ^[Nn]$ ]]; then
-        shopware=0
-      else
-        echo " >> Please enter either Y or N."
-        readShopware
-      fi
-    fi
-  fi
-}
-
-function readPhpMyAdmin()
-{
-  if [ "$TRAVIS_CI" == 1 ] && [ "$FEATURE" = "phpMyAdmin" ]; then
-    phpmyadmin=1
-  elif [ "$TRAVIS_CI" == 1 ] && [ "$FEATURE" != "phpMyAdmin" ]; then
-    phpmyadmin=0
-  else
-    read -p "Install phpMyAdmin? (Y/N)" -n 1 -r
-    echo
-    if [[ "$REPLY" =~ ^[Yy]$ ]]; then
-      phpmyadmin=1
-    elif [[ "$REPLY" =~ ^[Nn]$ ]]; then
-      phpmyadmin=0
-    else
-      echo " >> Please enter either Y or N."
-      readPhpMyAdmin
-    fi
-  fi
-}
-
-function readUnattendedUpgrades()
-{
-  if [[ $TRAVIS_CI == 1 ]]; then
-    unattendedupgrades=1
-  else
-    read -p "Configure unattended-upgrades? (Y/N)" -n 1 -r
-    echo
-    if [[ "$REPLY" =~ ^[Yy]$ ]]; then
-      unattendedupgrades=1
-    elif [[ "$REPLY" =~ ^[Nn]$ ]]; then
-      unattendedupgrades=0
-    else
-      echo " >> Please enter either Y or N."
-      readUnattendedUpgrades
     fi
   fi
 }
@@ -206,19 +123,11 @@ function prepare()
   fi
   readEmail
   readDomain
-  readCaddyExtensions
   readWordPress
-  readShopware
-  readPhpMyAdmin
-  readUnattendedUpgrades
   echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
-  echo "     Caddy Features: ${caddy_extensions}"
   echo "             Domain: ${domain}"
   echo "              Email: ${email}"
   echo "          WordPress: ${wordpress}"
-  echo "           Shopware: ${shopware}"
-  echo "         phpMyAdmin: ${phpmyadmin}"
-  echo "unattended-upgrades: ${unattendedupgrades}"
   echo ""
   readStartSetup
 }
@@ -257,25 +166,32 @@ function create_user()
 function install_caddy()
 {
   echo "Installing Caddy."
-  sudo apt-get install libcap2-bin curl -y
-  sudo -u caddy curl -fsSL https://getcaddy.com | bash -s personal "${caddy_extensions}"
+  apt-get install libcap2-bin curl -y
+  curl -L -o /usr/local/bin/caddy https://github.com/caddyserver/caddy/releases/download/v2.0.0-beta.14/caddy2_beta14_linux_amd64
   echo "Setting permissions for Caddy."
+  chmod +x /usr/local/bin/caddy
   sudo setcap cap_net_bind_service=+ep /usr/local/bin/caddy
   echo "Creating Caddyfile."
   create_caddyfile
   echo "Setting up directories"
-  runuser -l caddy -c "mkdir log"
   mkdir /var/www
   echo "Setting up directories for ${domain}"
-  runuser -l caddy -c "mkdir log/${domain}"
   mkdir /var/www/"${domain}"
-  if [ "$wordpress" = 0 ] && [ "$shopware" = 0 ]; then
+  if [ "$wordpress" = 0 ]; then
     echo '<html lang="en"><head><title>Hello World</title></head><body>Hello World</body></html>' > /var/www/"${domain}"/index.html
   fi
 }
 
 function create_caddyfile()
 {
+  # Global options block
+  sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
+{
+  email ${email}
+}
+
+EOT
+
   # Redirect www. if domain is not an ip address or a subdomain
   dots="${domain//[^.]}"
   if valid_ip "${domain}"; then
@@ -308,50 +224,11 @@ EOT
 
   # Add basic configuration
   sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
-  root /var/www/${domain}
-  log log/${domain}/access.log
-  errors log/${domain}/error.log
-  gzip
+  root * /var/www/${domain}
+  encode zstd gzip
+  file_server
+  php_fastcgi 127.0.0.1:9000
 EOT
-
-  # fastcgi
-  if [ "$shopware" = 1 ]; then
-    sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
-  fastcgi / 127.0.0.1:9000 php {
-    index shopware.php index.php
-    env PATH /bin
-  }
-EOT
-  else
-    sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
-  fastcgi / 127.0.0.1:9000 php {
-    env PATH /bin
-  }
-EOT
-  fi
-
-  # Add rewrites for WordPress (if selected)
-  if [ "$wordpress" = 1 ]; then
-    sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
-  rewrite {
-    if {path} not_match ^\/wp-admin
-    to {path} {path}/ /index.php?_url={uri}
-  }
-EOT
-  fi
-
-  # Add rewrites for Shopware (if selected)
-  if [ "$shopware" = 1 ]; then
-    sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
-  rewrite /recovery/update/ {
-    if {path} not_has assets
-    to /recovery/update/index.php
-  }
-  rewrite {
-    to {path} {path}/ /shopware.php?{query}
-  }
-EOT
-  fi
 
   # Close basic Caddyfile
   sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
@@ -361,8 +238,8 @@ EOT
 
 function install_php()
 {
-  PHP="php7.3"
-  PHPV="7.3"
+  PHP="php7.4"
+  PHPV="7.4"
     
   echo "Check Packages for updates"
   sudo apt-get update
@@ -374,7 +251,7 @@ function install_php()
   echo "Installing PHP and extensions"
   sudo apt-get install ${PHP}-fpm ${PHP}-mysql ${PHP}-curl ${PHP}-intl ${PHP}-mbstring ${PHP}-soap ${PHP}-xml ${PHP}-zip php-memcached memcached -y
   echo "Configuring PHP Settings for Caddy"
-  OLDPHPCONF="listen \= \/run\/php\/php7\.3\-fpm\.sock"
+  OLDPHPCONF="listen \= \/run\/php\/php7\.4\-fpm\.sock"
   NEWPHPCONF="listen \= 127\.0\.0\.1\:9000"
   sudo sed -i "s/${OLDPHPCONF}/${NEWPHPCONF}/g" /etc/php/${PHPV}/fpm/pool.d/www.conf
   echo "Restarting PHP"
@@ -383,36 +260,13 @@ function install_php()
   curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
 }
 
-function install_mailutils()
-{
-  if [[ ${unattendedupgrades} == 1 ]]; then
-    echo "Setting up mailutils"
-    debconf-set-selections <<< "postfix postfix/mailname string ${domain}"
-    debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Internet Site'"
-    apt-get install mailutils -y
-  fi
-}
-
-function install_phpmyadmin()
-{
-  if [[ ${phpmyadmin} == 1 ]]; then
-    composer create-project phpmyadmin/phpmyadmin /var/www/"${domain}"/phpmyadmin
-    echo "Setting blowfish_secret"
-    cd /var/www/"${domain}"/phpmyadmin
-    cp config.sample.inc.php config.inc.php
-    BLOWFISHSECRET=$(dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev | tr -dc 'a-zA-Z0-9')
-    sudo sed -i "s|cfg\['blowfish_secret'\] = ''|cfg['blowfish_secret'] = '$BLOWFISHSECRET'|" config.inc.php
-    chown -R www-data /var/www/
-  fi
-}
-
 function install_caddy_service()
 {
   echo "Registering Caddy as a Service"
   cat <<EOT >> /etc/systemd/system/caddy.service
 [Unit]
-Description=Caddy - The HTTP/2 web server with automatic HTTPS
-Documentation=https://caddyserver.com/docs
+Description=Caddy 2 - The Ultimate Server with Automatic HTTPS
+Documentation=https://caddyserver.com/docs/
 After=network.target
 
 [Service]
@@ -420,7 +274,7 @@ User=caddy
 WorkingDirectory=/home/caddy
 LimitNOFILE=8192
 PIDFile=/var/run/caddy/caddy.pid
-ExecStart=/usr/local/bin/caddy -agree -email ${email} -pidfile=/var/run/caddy/caddy.pid
+ExecStart=/usr/local/bin/caddy start
 Restart=on-failure
 StartLimitInterval=600
 
@@ -433,7 +287,7 @@ EOT
     sudo systemctl enable caddy
     systemctl daemon-reload
   fi
-  echo "Successfully registered Caddy as a Service."
+  echo "Successfully registered Caddy 2 as a Service."
 }
 
 function install_mariadb()
@@ -491,79 +345,6 @@ function install_wordpress()
   fi
 }
 
-function install_shopware()
-{
-  if [[ "$shopware" = 1 ]]; then
-    echo "Installing Shopware"
-    swdbpass=$(dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev | tr -dc 'a-zA-Z0-9')
-
-    mysql -uroot -e "create database shopware;"
-    mysql -uroot -e "grant usage on *.* to shopware@localhost identified by '${swdbpass}';"
-    mysql -uroot -e "grant all privileges on shopware.* to shopware@localhost;"
-    mysql -uroot -e "FLUSH PRIVILEGES;"
-
-    swadminpass=$(dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 | rev | cut -b 2- | rev | tr -dc 'a-zA-Z0-9')
-
-    echo "Installing required packages"
-    case $version in
-    16.04)
-        apt install openjdk-9-jre-headless ant unzip -y
-        ;;
-    *)
-        apt install ant unzip -y
-    esac
-    echo "Getting sw.phar"
-    curl -o /usr/local/bin/sw https://shopwarelabs.github.io/sw-cli-tools/sw.phar
-    chmod +x /usr/local/bin/sw
-
-    echo "Making Shopware specific php.ini changes"
-    OLDMEMORYLIMIT="memory_limit \= 128M"
-    NEWMEMORYLIMIT="memory_limit \= 256M"
-    sudo sed -i "s/${OLDMEMORYLIMIT}/${NEWMEMORYLIMIT}/g" /etc/php/${PHPV}/fpm/php.ini
-    OLDMAXFILESIZE="upload_max_filesize \= 2M"
-    NEWMAXFILESIZE="upload_max_filesize \= 6M"
-    sudo sed -i "s/${OLDMAXFILESIZE}/${NEWMAXFILESIZE}/g" /etc/php/${PHPV}/fpm/php.ini
-
-    echo "Installing Shopware specific packages"
-    apt-get install libfreetype6 -y
-
-    echo "Restarting PHP"
-    sudo service ${PHP}-fpm restart
-
-    echo "Installing Shopware via Shopware CLI Tools"
-    sw install:release --release=latest --install-dir=/var/www/"${domain}" --db-user=shopware --db-password="${swdbpass}" --admin-username=admin --admin-password="${swadminpass}" --db-name=shopware --shop-path=CS_SW_PATH_PLACEHOLDER --shop-host="${domain}${port}"
-    mysql -uroot -e "UPDATE shopware.s_core_shops SET base_path = NULL WHERE s_core_shops.id = 1;"
-  fi
-}
-
-function setup_unattended_upgrades()
-{
-  if [[ ${unattendedupgrades} == 1 ]]; then
-    echo "Setting up unattended_upgrades"
-    apt-get install unattended-upgrades -y
-    set +e
-    UNC=$(dpkg-query -W --showformat='${Status}\n' update-notifier-common|grep "install ok installed")
-    set -e
-    if [ "" == "$UNC" ]; then
-      apt-get install update-notifier-common -y
-      cat <<EOT >> /etc/apt/apt.conf.d/20auto-upgrades
-APT::Periodic::Update-Package-Lists "1";
-APT::Periodic::Unattended-Upgrade "1";
-EOT
-    fi
-    OLD20AUCONF='APT::Periodic::Unattended-Upgrade "1";'
-    NEW20AUCONF='APT::Periodic::Unattended-Upgrade "3";'
-    sudo sed -i "s/${OLD20AUCONF}/${NEW20AUCONF}/g" /etc/apt/apt.conf.d/20auto-upgrades
-    cat <<EOT >> /etc/apt/apt.conf.d/20auto-upgrades
-APT::Periodic::Download-Upgradeable-Packages "1";
-APT::Periodic::AutocleanInterval "9";
-EOT
-    OLD50UUCONF='\/\/Unattended-Upgrade::Mail "root";'
-    NEW50UUCONF="Unattended-Upgrade::Mail \"${email}\";"
-    sudo sed -i "s/${OLD50UUCONF}/${NEW50UUCONF}/g" /etc/apt/apt.conf.d/50unattended-upgrades
-  fi
-}
-
 function finish()
 {
   if [[ $TRAVIS_CI == 1 ]]; then
@@ -592,22 +373,6 @@ WordPress admin password:     ${wpadminpass}
 
 Please keep this information somewhere safe (preferably not here!)
 EOT
-  elif [ "$shopware" = 1 ]; then
-    sudo -u caddy cat <<EOT >> /home/caddy/caddy-script.log
-Thanks for using caddy-script!
-If you run into any issues related to this setup, please open an issue at
-https://github.com/vintagesucks/caddy-script
-
-Domain:                       ${protocol}${domain}
-MariaDB root password:        ${MARIADB_ROOT_PASS}
-Shopware database name:       shopware
-Shopware database username:   shopware
-Shopware database password:   ${swdbpass}
-Shopware admin user:          admin
-Shopware admin password:      ${swadminpass}
-
-Please keep this information somewhere safe (preferably not here!)
-EOT
   else
     sudo -u caddy cat <<EOT >> /home/caddy/caddy-script.log
 Thanks for using caddy-script!
@@ -622,7 +387,7 @@ EOT
   fi
   if [[ $TRAVIS_CI == 1 ]]; then
     ulimit -n 8192
-    runuser -l caddy -c "/usr/local/bin/caddy -conf=/home/caddy/Caddyfile &"
+    runuser -l caddy -c "/usr/local/bin/caddy start"
   else
     service caddy start
     clear
@@ -664,18 +429,13 @@ function tests()
 }
 
 set -e
-version=$(lsb_release -sr)
 prepare
 check_root
 create_user
 install_caddy
 install_php
-install_mailutils
-install_phpmyadmin
 install_caddy_service
 install_mariadb
 install_wordpress
-install_shopware
-setup_unattended_upgrades
 finish
 tests
