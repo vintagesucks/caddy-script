@@ -167,7 +167,7 @@ function install_caddy()
 {
   echo "Installing Caddy."
   apt-get install libcap2-bin curl -y
-  curl -L -o /usr/local/bin/caddy https://github.com/caddyserver/caddy/releases/download/v2.0.0-beta.14/caddy2_beta14_linux_amd64
+  curl -L -o /usr/local/bin/caddy https://github.com/caddyserver/caddy/releases/download/v2.0.0-beta.15/caddy2_beta15_linux_amd64
   echo "Setting permissions for Caddy."
   chmod +x /usr/local/bin/caddy
   sudo setcap cap_net_bind_service=+ep /usr/local/bin/caddy
