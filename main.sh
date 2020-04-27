@@ -387,6 +387,11 @@ EOT
   fi
   if [[ $TRAVIS_CI == 1 ]]; then
     ulimit -n 8192
+
+    #debug
+    file /usr/local/bin/caddy
+    dpkg --print-architecture
+
     runuser -l caddy -c "/usr/local/bin/caddy start"
   else
     service caddy start
