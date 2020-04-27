@@ -15,7 +15,7 @@ Caddy installation script
 
 #### Tested on
 - Ubuntu 18.04
-- Ubuntu 19.10
+- Ubuntu 20.04
 
 #### Usage
 `bash <(curl -s https://raw.githubusercontent.com/vintagesucks/caddy-script/v2/main.sh)`

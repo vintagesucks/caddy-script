@@ -4,8 +4,8 @@ services:
 env:
   - UBUNTU="18.04" FEATURE="HelloWorld"
   - UBUNTU="18.04" FEATURE="WordPress"
-  - UBUNTU="19.10" FEATURE="HelloWorld"
-  - UBUNTU="19.10" FEATURE="WordPress"
+  - UBUNTU="20.04" FEATURE="HelloWorld"
+  - UBUNTU="20.04" FEATURE="WordPress"
 
 script:
   - docker build -t caddy-script -f Dockerfiles/$UBUNTU .
