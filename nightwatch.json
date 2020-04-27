@@ -11,12 +11,14 @@
         "browserName": "chrome",
         "chromeOptions" : {
           "args" : [
+            "--ignore-certificate-errors",
             "--no-sandbox", 
             "--disable-gpu", 
             "--headless"
           ]
         },
-        "acceptSslCerts": true
+        "acceptSslCerts": true,
+        "acceptInsecureCerts": true
       }
     }
   }

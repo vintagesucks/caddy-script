@@ -167,7 +167,10 @@ function install_caddy()
 {
   echo "Installing Caddy."
   apt-get install libcap2-bin curl -y
-  curl -L -o /usr/local/bin/caddy https://github.com/caddyserver/caddy/releases/download/v2.0.0-beta.15/caddy2_beta15_linux_amd64
+  curl -L -o caddy.tar.gz https://github.com/caddyserver/caddy/releases/download/v2.0.0-rc.3/caddy_2.0.0-rc.3_linux_amd64.tar.gz
+  tar -zxvf caddy.tar.gz caddy
+  mv caddy /usr/local/bin/caddy
+  rm caddy.tar.gz
   echo "Setting permissions for Caddy."
   chmod +x /usr/local/bin/caddy
   sudo setcap cap_net_bind_service=+ep /usr/local/bin/caddy
@@ -192,22 +195,6 @@ function create_caddyfile()
 
 EOT
 
-  # Redirect www. if domain is not an ip address or a subdomain
-  dots="${domain//[^.]}"
-  if valid_ip "${domain}"; then
-    sleep 0
-  elif [ "${#dots}" != 1 ]; then
-    sleep 0
-  else
-    sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
-www.${domain} {
-  redir https://${domain}{uri}
-}
-
-EOT
-  fi
-
-  # Open Caddyfile
   if [[ $TRAVIS_CI == 1 ]]; then
     sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
 ${domain}${port} {

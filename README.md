@@ -1,4 +1,4 @@
-## :whale: caddy-script  
+## :whale: caddy-script
 Caddy installation script
 
 [![Travis CI](https://api.travis-ci.com/vintagesucks/caddy-script.svg?branch=v2)](https://travis-ci.com/vintagesucks/caddy-script) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a0b0746d7a9f4a9db9fe7ae0d1fd775b)](https://www.codacy.com/app/vintagesucks/caddy-script) [![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-round)](#contributors)
@@ -6,7 +6,7 @@ Caddy installation script
 > ⚠️ This script installs Caddy v2, if you are looking for v1 please follow [this link](https://github.com/vintagesucks/caddy-script/tree/v1).
 
 #### Features
-- [x] Install Caddy v2.0.0-beta.15
+- [x] Install Caddy v2.0.0-rc.3
 - [x] Install PHP 7.4
 - [x] Install MariaDB
 - [x] Register Caddy as a service with systemd
