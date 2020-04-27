@@ -167,7 +167,10 @@ function install_caddy()
 {
   echo "Installing Caddy."
   apt-get install libcap2-bin curl -y
-  curl -L -o /usr/local/bin/caddy https://github.com/caddyserver/caddy/releases/download/v2.0.0-rc.3/caddy_2.0.0-rc.3_linux_amd64.tar.gz
+  curl -L -o caddy.tar.gz https://github.com/caddyserver/caddy/releases/download/v2.0.0-rc.3/caddy_2.0.0-rc.3_linux_amd64.tar.gz
+  tar -zxvf caddy.tar.gz caddy
+  mv caddy /usr/local/bin/caddy
+  rm caddy.tar.gz
   echo "Setting permissions for Caddy."
   chmod +x /usr/local/bin/caddy
   sudo setcap cap_net_bind_service=+ep /usr/local/bin/caddy
@@ -387,11 +390,6 @@ EOT
   fi
   if [[ $TRAVIS_CI == 1 ]]; then
     ulimit -n 8192
-
-    #debug
-    file /usr/local/bin/caddy
-    dpkg --print-architecture
-
     runuser -l caddy -c "/usr/local/bin/caddy start"
   else
     service caddy start
