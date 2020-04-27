@@ -165,8 +165,10 @@ function create_user()
 
 function install_caddy()
 {
+  echo "Check Packages for updates"
+  sudo apt-get update
   echo "Installing Caddy."
-  apt-get install libcap2-bin curl -y
+  apt-get install libcap2-bin curl sudo -y
   curl -L -o caddy.tar.gz https://github.com/caddyserver/caddy/releases/download/v2.0.0-rc.3/caddy_2.0.0-rc.3_linux_amd64.tar.gz
   tar -zxvf caddy.tar.gz caddy
   mv caddy /usr/local/bin/caddy
