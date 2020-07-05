@@ -169,7 +169,7 @@ function install_caddy()
   sudo apt-get update
   echo "Installing Caddy."
   apt-get install libcap2-bin curl sudo -y
-  curl -L -o caddy.tar.gz https://github.com/caddyserver/caddy/releases/download/v2.1.0/caddy_2.1.0_linux_amd64.tar.gz
+  curl -L -o caddy.tar.gz https://github.com/caddyserver/caddy/releases/download/v2.1.1/caddy_2.1.1_linux_amd64.tar.gz
   tar -zxvf caddy.tar.gz caddy
   mv caddy /usr/local/bin/caddy
   rm caddy.tar.gz
