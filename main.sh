@@ -285,27 +285,27 @@ function install_mariadb()
   sudo apt-get install mariadb-server -y
   service mysql restart
   apt install expect -y
-	SECURE_MYSQL=$(expect -c "
-  	set timeout 5
-  	spawn mysql_secure_installation
-  	expect \"Enter current password for root (enter for none):\"
-  	send \"\r\"
-  	expect \"Set root password? \[Y/n\]\"
-  	send \"y\r\"
-  	expect \"New password:\"
-  	send \"${MARIADB_ROOT_PASS}\r\"
-  	expect \"Re-enter new password:\"
-  	send \"${MARIADB_ROOT_PASS}\r\"
-  	expect \"Remove anonymous users? \[Y/n\]\"
-  	send \"y\r\"
-  	expect \"Disallow root login remotely? \[Y/n\]\"
-  	send \"y\r\"
-  	expect \"Remove test database and access to it? \[Y/n\]\"
-  	send \"y\r\"
-  	expect \"Reload privilege tables now? \[Y/n\]\"
-  	send \"y\r\"
-  	expect eof
-  	")
+  SECURE_MYSQL=$(expect -c "
+    set timeout 5
+    spawn mysql_secure_installation
+    expect \"Enter current password for root (enter for none):\"
+    send \"\r\"
+    expect \"Set root password? \[Y/n\]\"
+    send \"y\r\"
+    expect \"New password:\"
+    send \"${MARIADB_ROOT_PASS}\r\"
+    expect \"Re-enter new password:\"
+    send \"${MARIADB_ROOT_PASS}\r\"
+    expect \"Remove anonymous users? \[Y/n\]\"
+    send \"y\r\"
+    expect \"Disallow root login remotely? \[Y/n\]\"
+    send \"y\r\"
+    expect \"Remove test database and access to it? \[Y/n\]\"
+    send \"y\r\"
+    expect \"Reload privilege tables now? \[Y/n\]\"
+    send \"y\r\"
+    expect eof
+    ")
   echo "${SECURE_MYSQL}"
   apt remove expect -y
 }
