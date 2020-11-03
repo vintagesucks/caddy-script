@@ -16,8 +16,3 @@ env:
 script:
   - docker build -t caddy-script -f Dockerfiles/$UBUNTU .
   - docker run caddy-script /bin/bash -c "export TRAVIS_CI=1; export FEATURE=$FEATURE; apt-get update; apt-get install -y curl sudo software-properties-common; bash main.sh"
-
-notifications:
-  email:
-    recipients:
-      - vintagesucks@gmail.com
