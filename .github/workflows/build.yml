@@ -10,12 +10,12 @@ jobs:
         include:
           - file: "18.04"
             feature: "hello-world"
-          #- file: "18.04"
-          #  feature: "wordpress"
-          #- file: "20.04"
-          #  feature: "hello-world"
-          #- file: "20.04"
-          #  feature: "wordpress"
+          - file: "18.04"
+            feature: "wordpress"
+          - file: "20.04"
+            feature: "hello-world"
+          - file: "20.04"
+            feature: "wordpress"
     steps:
       - name: Docker Build
         id: docker_build
