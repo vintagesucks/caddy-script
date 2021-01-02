@@ -12,8 +12,8 @@
         "chromeOptions" : {
           "args" : [
             "--ignore-certificate-errors",
-            "--no-sandbox", 
-            "--disable-gpu", 
+            "--no-sandbox",
+            "--disable-gpu",
             "--headless"
           ]
         },

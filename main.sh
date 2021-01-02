@@ -19,8 +19,8 @@ function checkLogfile()
 
 function readEmail()
 {
-  if [[ $TRAVIS_CI == 1 ]]; then
-    email="travis@example.org"
+  if [[ $GITHUB_ACTIONS == 1 ]]; then
+    email="github@example.org"
   else
     read -e -p "Enter an email address (e.g. admin@example.org) " -r email
     if [[ ${#email} -gt 2 ]]; then
@@ -34,7 +34,7 @@ function readEmail()
 
 function readDomain()
 {
-  if [[ $TRAVIS_CI == 1 ]]; then
+  if [[ $GITHUB_ACTIONS == 1 ]]; then
     protocol="http://"
     domain="127.0.0.1"
     port=":1337"
@@ -74,9 +74,9 @@ function valid_ip()
 
 function readWordPress()
 {
-  if [ "$TRAVIS_CI" == 1 ] && [ "$FEATURE" = "WordPress" ]; then
+  if [ "$GITHUB_ACTIONS" == 1 ] && [ "$FEATURE" = "WordPress" ]; then
     wordpress=1
-  elif [ "$TRAVIS_CI" == 1 ] && [ "$FEATURE" != "WordPress" ]; then
+  elif [ "$GITHUB_ACTIONS" == 1 ] && [ "$FEATURE" != "WordPress" ]; then
     wordpress=0
   else
     read -p "Install WordPress? (Y/N)" -n 1 -r
@@ -94,7 +94,7 @@ function readWordPress()
 
 function readStartSetup()
 {
-  if [[ $TRAVIS_CI == 1 ]]; then
+  if [[ $GITHUB_ACTIONS == 1 ]]; then
     sleep 0
   else
     read -p "Continue with setup? (Y/N)" -n 1 -r
@@ -114,7 +114,7 @@ function readStartSetup()
 function prepare()
 {
   checkLogfile
-  if [[ $TRAVIS_CI == 1 ]]; then
+  if [[ $GITHUB_ACTIONS == 1 ]]; then
     apt-get install -y tzdata
     ln -fs /usr/share/zoneinfo/Europe/Paris /etc/localtime
     dpkg-reconfigure --frontend noninteractive tzdata
@@ -134,7 +134,7 @@ function prepare()
 
 function check_root()
 {
-  if [[ $TRAVIS_CI == 1 ]]; then
+  if [[ $GITHUB_ACTIONS == 1 ]]; then
     sleep 0
   else
     echo "Checking if logged in user is root."
@@ -197,7 +197,7 @@ function create_caddyfile()
 
 EOT
 
-  if [[ $TRAVIS_CI == 1 ]]; then
+  if [[ $GITHUB_ACTIONS == 1 ]]; then
     sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
 ${domain}${port} {
 EOT
@@ -229,7 +229,7 @@ function install_php()
 {
   PHP="php7.4"
   PHPV="7.4"
-    
+
   echo "Check Packages for updates"
   sudo apt-get update
   echo "Adding PHP repository"
@@ -270,7 +270,7 @@ StartLimitInterval=600
 [Install]
 WantedBy=multi-user.target
 EOT
-  if [[ $TRAVIS_CI == 1 ]]; then
+  if [[ $GITHUB_ACTIONS == 1 ]]; then
     sleep 0
   else
     sudo systemctl enable caddy
@@ -336,7 +336,7 @@ function install_wordpress()
 
 function finish()
 {
-  if [[ $TRAVIS_CI == 1 ]]; then
+  if [[ $GITHUB_ACTIONS == 1 ]]; then
     sleep 0
   else
     echo "Remove packages that are no more needed."
@@ -374,7 +374,7 @@ MariaDB root password:        ${MARIADB_ROOT_PASS}
 Please keep this information somewhere safe (preferably not here!)
 EOT
   fi
-  if [[ $TRAVIS_CI == 1 ]]; then
+  if [[ $GITHUB_ACTIONS == 1 ]]; then
     ulimit -n 8192
     runuser -l caddy -c "/usr/local/bin/caddy start"
   else
@@ -387,7 +387,7 @@ EOT
 
 function tests()
 {
-  if [[ $TRAVIS_CI == 1 ]]; then
+  if [[ $GITHUB_ACTIONS == 1 ]]; then
     echo "Testing installation"
     echo "Installing Node.js"
     curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
