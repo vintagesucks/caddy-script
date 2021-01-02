@@ -74,9 +74,9 @@ function valid_ip()
 
 function readWordPress()
 {
-  if [ "$GITHUB_ACTIONS" == 1 ] && [ "$FEATURE" = "WordPress" ]; then
+  if [ "$GITHUB_ACTIONS" == 1 ] && [ "$FEATURE" = "wordpress" ]; then
     wordpress=1
-  elif [ "$GITHUB_ACTIONS" == 1 ] && [ "$FEATURE" != "WordPress" ]; then
+  elif [ "$GITHUB_ACTIONS" == 1 ] && [ "$FEATURE" != "wordpress" ]; then
     wordpress=0
   else
     read -p "Install WordPress? (Y/N)" -n 1 -r

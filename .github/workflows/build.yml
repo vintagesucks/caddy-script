@@ -9,13 +9,13 @@ jobs:
       matrix:
         include:
           - file: "18.04"
-            feature: "HelloWorld"
+            feature: "hello-world"
           #- file: "18.04"
-          #  feature: "WordPress"
+          #  feature: "wordpress"
           #- file: "20.04"
-          #  feature: "HelloWorld"
+          #  feature: "hello-world"
           #- file: "20.04"
-          #  feature: "WordPress"
+          #  feature: "wordpress"
     steps:
       - name: Docker Build
         id: docker_build
