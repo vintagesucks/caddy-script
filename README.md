@@ -6,7 +6,7 @@ Caddy installation script
 > ⚠️ This script installs Caddy v2, if you are looking for v1 please follow [this link](https://github.com/vintagesucks/caddy-script/tree/v1).
 
 #### Features
-- [x] Install Caddy v2.3.0
+- [x] Install Caddy v2.2.1
 - [x] Install PHP 7.4
 - [x] Install MariaDB
 - [x] Register Caddy as a service with systemd
