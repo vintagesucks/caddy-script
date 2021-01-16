@@ -205,7 +205,7 @@ EOT
   elif valid_ip "${domain}"; then
     sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
 ${domain}:80 {
-  auto_https off
+  auto_https disable_redirects
 EOT
   else
     sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
