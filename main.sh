@@ -113,9 +113,6 @@ function readStartSetup()
 
 function prepare()
 {
-  # APT: retry failed files
-  echo 'APT::Acquire::Retries "3";' > /etc/apt/apt.conf.d/80-retries
-
   checkLogfile
   if [[ $GITHUB_ACTIONS == 1 ]]; then
     apt-get install -y tzdata
