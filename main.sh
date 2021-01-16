@@ -200,11 +200,11 @@ EOT
   if [[ $GITHUB_ACTIONS == 1 ]]; then
     sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
 ${domain}${port} {
+  tls self_signed
 EOT
   elif valid_ip "${domain}"; then
     sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
 ${domain}:80 {
-  tls self_signed
 EOT
   else
     sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
