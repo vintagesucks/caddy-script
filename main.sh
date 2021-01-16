@@ -223,6 +223,11 @@ EOT
   sudo -u caddy cat <<EOT >> /home/caddy/Caddyfile
 }
 EOT
+
+  # Add Caddyfile to CI log
+  if [[ $GITHUB_ACTIONS == 1 ]]; then
+    cat /home/caddy/Caddyfile
+  fi
 }
 
 function install_php()
