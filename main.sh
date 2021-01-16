@@ -168,7 +168,7 @@ function install_caddy()
   echo "Check Packages for updates"
   sudo apt-get update
   echo "Installing Caddy."
-  apt-get install libcap2-bin curl sudo -y
+  apt-get install libcap2-bin curl sudo libnss3-tools -y
   curl -L -o caddy.tar.gz https://github.com/caddyserver/caddy/releases/download/v2.2.1/caddy_2.2.1_linux_amd64.tar.gz
   tar -zxvf caddy.tar.gz caddy
   mv caddy /usr/local/bin/caddy
