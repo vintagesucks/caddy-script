@@ -26,7 +26,7 @@ jobs:
           push: false
       - name: Docker Run
         id: docker_run
-        uses: addnab/docker-run-action@v2
+        uses: addnab/docker-run-action@v3
         with:
           image: caddy-script-${{ matrix.file }}-${{ matrix.feature }}:latest
           run: /bin/bash -c "export GITHUB_ACTIONS=1; export FEATURE=${{ matrix.feature }}; apt-get update; apt-get install -y curl sudo software-properties-common; bash main.sh"
