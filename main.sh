@@ -663,6 +663,10 @@ function tests()
   fi
 }
 
+echo "caddy-script v1 unfortunately no longer works as it required the now defunct service getcaddy.com."
+echo "Please visit https://github.com/vintagesucks/caddy-script for the current version."
+exit 1
+
 set -e
 version=$(lsb_release -sr)
 prepare

@@ -1,3 +1,7 @@
+# ⚠️ caddy-script v1 unfortunately no longer works as it required the now defunct service getcaddy.com. Please visit [https://github.com/vintagesucks/caddy-script](https://github.com/vintagesucks/caddy-script) for the current version.
+
+---
+
 ## :whale: caddy-script  
 Caddy installation script (automated)
 
