@@ -19,7 +19,7 @@ jobs:
     steps:
       - name: Docker Build
         id: docker_build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           file: ./Dockerfiles/${{ matrix.file }}
           tags: caddy-script-${{ matrix.file }}-${{ matrix.feature }}
